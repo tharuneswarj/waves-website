@@ -37,14 +37,16 @@ export default function ProductHero({
   return (
     <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2 lg:gap-14">
       {/* Gallery — left */}
-      <ProductGallery
-        images={images}
-        productTitle={productTitle}
-        activeShade={activeShade}
-      />
+      <div className="min-w-0">
+        <ProductGallery
+          images={images}
+          productTitle={productTitle}
+          activeShade={activeShade}
+        />
+      </div>
 
       {/* Product info — right */}
-      <div className="flex flex-col gap-2">
+      <div className="min-w-0 flex flex-col gap-2">
         <h1 className="text-4xl md:text-5xl">{productTitle}</h1>
         <ProductForm
           variants={variants}

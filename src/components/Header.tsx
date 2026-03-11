@@ -32,9 +32,22 @@ export default function Header() {
   // Transparent header on homepage above the fold
   const isTransparent = isHome && !scrolled && !mobileOpen;
 
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+        mobileOpen ? "bottom-0" : ""
+      } ${
         isTransparent
           ? "bg-transparent"
           : "bg-surface/95 backdrop-blur-sm"
