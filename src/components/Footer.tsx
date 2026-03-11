@@ -19,7 +19,7 @@ export default function Footer() {
           <div className="flex flex-col gap-6">
             <Link href="/" aria-label="Waves Company home">
               <Image
-                src="/logos/Blue_and_Cream__Logo.png"
+                src="/logos/Blue_and_Cream_Logo_v2.png"
                 alt="Waves Company"
                 width={140}
                 height={56}

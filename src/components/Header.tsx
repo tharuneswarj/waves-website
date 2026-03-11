@@ -57,7 +57,7 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="relative z-50 shrink-0" aria-label="Waves Company home">
           <Image
-            src={isTransparent ? "/logos/Blue_and_Cream__Logo.png" : "/logos/Cream_and_Blue__Logo.png"}
+            src={isTransparent ? "/logos/Blue_and_Cream_Logo_v2.png" : "/logos/Cream_and_Blue_Logo_v2.png"}
             alt="Waves Company"
             width={120}
             height={48}
