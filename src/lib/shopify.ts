@@ -59,6 +59,15 @@ export interface ShopifyMetafield {
   value: string;
 }
 
+export interface ShopifyProductOption {
+  name: string;
+  values: string[];
+  optionValues: {
+    name: string;
+    swatch: { color: string } | null;
+  }[];
+}
+
 export interface ShopifyProduct {
   id: string;
   handle: string;
@@ -68,6 +77,7 @@ export interface ShopifyProduct {
   featuredImage: ShopifyImage | null;
   images: { edges: { node: ShopifyImage }[] };
   variants: { edges: { node: ShopifyProductVariant }[] };
+  options: ShopifyProductOption[];
   priceRange: {
     minVariantPrice: ShopifyPrice;
     maxVariantPrice: ShopifyPrice;
@@ -135,6 +145,16 @@ const PRODUCT_FRAGMENT = /* GraphQL */ `
           altText
           width
           height
+        }
+      }
+    }
+    options(first: 10) {
+      name
+      values
+      optionValues {
+        name
+        swatch {
+          color
         }
       }
     }

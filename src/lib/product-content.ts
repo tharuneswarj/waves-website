@@ -18,11 +18,26 @@ export function getDesignStory(): string[] {
   ];
 }
 
-/** Parse the shade_colours JSON metafield → {shade: hex}. */
+/** Extract category metafield color swatches from product options. */
 export function getShadeColours(
   product?: ShopifyProduct | null
 ): Record<string, string> {
-  if (product?.shadeColours?.value) {
+  const colours: Record<string, string> = {};
+  
+  if (product?.options) {
+    for (const option of product.options) {
+      if (option.optionValues) {
+        for (const val of option.optionValues) {
+          if (val.swatch?.color) {
+            colours[val.name] = val.swatch.color;
+          }
+        }
+      }
+    }
+  }
+
+  // Fallback to legacy metafield if category metafields aren't used yet
+  if (Object.keys(colours).length === 0 && product?.shadeColours?.value) {
     try {
       const parsed = JSON.parse(product.shadeColours.value);
       if (parsed && typeof parsed === "object") return parsed;
@@ -30,7 +45,8 @@ export function getShadeColours(
       // ignore
     }
   }
-  return {};
+
+  return colours;
 }
 
 /** Build the specs array from individual metafields. */
