@@ -95,3 +95,45 @@ Reference these when writing copy, designing layouts, or making UX decisions.
 - The homepage wave mark animation should feel alive but not distracting
 - Mobile experience matters as much as desktop - many visitors come from Instagram/Pinterest
 - Never feel like a generic Shopify store. This is a design studio website with commerce, not a shop with an about page.
+
+# ─── Add this section to the bottom of the existing CLAUDE.md ───
+
+## Updates Workflow
+
+When the user says **"check updates"**, read `updates.md` in the repo root and execute changes in this order:
+
+1. Read the full `updates.md` file
+2. Check the *Status* line at the top - skip if it says COMPLETE
+3. Work through **P0** items first, then **P1**, then **P2**
+4. For each item:
+   - Read the specified files
+   - Make the exact changes described
+   - If copy/content is provided verbatim, use it exactly as written (the founder has already approved it)
+   - If a change is blocked (e.g., needs an image file that isn't in `/public` yet), skip it and note why
+5. After completing each item, move it to the **Completed** section with today's date
+6. After all items are done, change the Status line to `COMPLETE`
+7. Commit with message: `fix: website updates from [date] review`
+
+### Rules:
+- Never invent copy or content - if the updates.md doesn't include the exact text, ask for it
+- Never skip a P0 item unless it's explicitly blocked
+- If something is ambiguous, check `/docs/` brand documents for guidance
+- If a change touches the brand voice or customer-facing copy, reference `/docs/tone-voice.md`
+- After making changes, run `npm run build` to verify nothing is broken
+
+## Asset Checklist
+
+`todo-assets.md` in the repo root lists all missing images, 3D models, and video files with exact filenames and locations. When implementing code that references these assets:
+
+- Check if the file exists in `/public/` first
+- If it exists, use it with `next/image` (proper width, height, alt text)
+- If it doesn't exist, use the `PlaceholderImage` component as fallback
+- When the founder says "I added the [asset name] photos", check `/public/` and swap PlaceholderImage components for real Image components
+
+## Shopify Metafield Scripts
+
+When `updates.md` includes a Shopify metafield script:
+- Create the script file as specified
+- Require `SHOPIFY_ADMIN_TOKEN` from `.env.local`
+- Make scripts idempotent (safe to run multiple times)
+- Run the script and verify the data appears in Shopify Admin

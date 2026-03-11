@@ -1,42 +1,37 @@
 import Link from "next/link";
+import Image from "next/image";
+import { getAllProducts, type ShopifyProduct } from "@/lib/shopify";
 import ScrollReveal from "@/components/ScrollReveal";
 import PlaceholderImage from "@/components/PlaceholderImage";
+import WaveMark from "@/components/WaveMark";
 
-export default function Home() {
+function formatMinPrice(product: ShopifyProduct): string {
+  const amount = parseFloat(product.priceRange.minVariantPrice.amount);
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: product.priceRange.minVariantPrice.currencyCode,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+export default async function Home() {
+  let products: ShopifyProduct[] = [];
+
+  try {
+    products = await getAllProducts();
+  } catch {
+    // Shopify not connected — render with static fallback
+  }
+
+
   return (
     <main>
       {/* ─── Section 1: Hero ─── */}
       <section className="relative flex min-h-screen flex-col items-center justify-center bg-primary px-6 text-center text-surface">
-        {/* Wave mark placeholder — will become Three.js / CSS animation */}
+        {/* Animated wave mark */}
         <div className="mb-10">
-          <svg
-            width="80"
-            height="50"
-            viewBox="0 0 80 50"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="opacity-40"
-            aria-hidden="true"
-          >
-            <path
-              d="M0 25C10 10 20 10 30 25C40 40 50 40 60 25C70 10 80 10 80 25"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              fill="none"
-            />
-            <path
-              d="M0 30C10 15 20 15 30 30C40 45 50 45 60 30C70 15 80 15 80 30"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              fill="none"
-            />
-            <path
-              d="M0 20C10 5 20 5 30 20C40 35 50 35 60 20C70 5 80 5 80 20"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              fill="none"
-            />
-          </svg>
+          <WaveMark />
         </div>
 
         <h1 className="mb-6 text-5xl leading-tight text-surface md:text-7xl lg:text-8xl">
@@ -80,47 +75,84 @@ export default function Home() {
       {/* ─── Section 3: Featured Products ─── */}
       <section className="bg-surface px-6 pb-section lg:pb-section-lg">
         <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2 lg:gap-12">
-          {/* Ripple */}
-          <ScrollReveal>
-            <Link href="/shop/ripple" className="group block">
-              <div className="overflow-hidden rounded-lg">
-                <PlaceholderImage
-                  label="Ripple Table Lamp — product photography"
-                  aspect="aspect-[3/4]"
-                  className="transition-transform duration-500 group-hover:scale-[1.03]"
-                />
-              </div>
-              <div className="mt-5 flex items-baseline justify-between">
-                <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
-                  Ripple
-                </h2>
-                <span className="font-mono text-xs tracking-wide text-primary/60">
-                  From &#8377;4,999
-                </span>
-              </div>
-            </Link>
-          </ScrollReveal>
-
-          {/* Hourglass */}
-          <ScrollReveal delay={0.15}>
-            <Link href="/shop/hourglass" className="group block">
-              <div className="overflow-hidden rounded-lg">
-                <PlaceholderImage
-                  label="Hourglass Table Lamp — product photography"
-                  aspect="aspect-[3/4]"
-                  className="transition-transform duration-500 group-hover:scale-[1.03]"
-                />
-              </div>
-              <div className="mt-5 flex items-baseline justify-between">
-                <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
-                  Hourglass
-                </h2>
-                <span className="font-mono text-xs tracking-wide text-primary/60">
-                  From &#8377;4,999
-                </span>
-              </div>
-            </Link>
-          </ScrollReveal>
+          {products.length > 0 ? (
+            /* Shopify-connected: live product data */
+            products.slice(0, 2).map((product, i) => (
+              <ScrollReveal key={product.id} delay={i * 0.15}>
+                <Link href={`/shop/${product.handle}`} className="group block">
+                  <div className="overflow-hidden rounded-lg">
+                    {product.featuredImage ? (
+                      <div className="relative aspect-[3/4] bg-primary/5">
+                        <Image
+                          src={product.featuredImage.url}
+                          alt={product.featuredImage.altText || product.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
+                      </div>
+                    ) : (
+                      <PlaceholderImage
+                        label={`${product.title} — product photography`}
+                        aspect="aspect-[3/4]"
+                        className="transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                    )}
+                  </div>
+                  <div className="mt-5 flex items-baseline justify-between">
+                    <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
+                      {product.title}
+                    </h2>
+                    <span className="font-mono text-xs tracking-wide text-primary/60">
+                      From {formatMinPrice(product)}
+                    </span>
+                  </div>
+                </Link>
+              </ScrollReveal>
+            ))
+          ) : (
+            /* Fallback: static cards */
+            <>
+              <ScrollReveal>
+                <Link href="/shop/ripple" className="group block">
+                  <div className="overflow-hidden rounded-lg">
+                    <PlaceholderImage
+                      label="Ripple Table Lamp — product photography"
+                      aspect="aspect-[3/4]"
+                      className="transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <div className="mt-5 flex items-baseline justify-between">
+                    <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
+                      Ripple
+                    </h2>
+                    <span className="font-mono text-xs tracking-wide text-primary/60">
+                      From &#8377;4,999
+                    </span>
+                  </div>
+                </Link>
+              </ScrollReveal>
+              <ScrollReveal delay={0.15}>
+                <Link href="/shop/hourglass" className="group block">
+                  <div className="overflow-hidden rounded-lg">
+                    <PlaceholderImage
+                      label="Hourglass Table Lamp — product photography"
+                      aspect="aspect-[3/4]"
+                      className="transition-transform duration-500 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <div className="mt-5 flex items-baseline justify-between">
+                    <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
+                      Hourglass
+                    </h2>
+                    <span className="font-mono text-xs tracking-wide text-primary/60">
+                      From &#8377;4,999
+                    </span>
+                  </div>
+                </Link>
+              </ScrollReveal>
+            </>
+          )}
         </div>
       </section>
 

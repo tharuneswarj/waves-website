@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type FormType = "select" | "enquiry" | "brief";
 type SubmitState = "idle" | "submitting" | "success" | "error";
@@ -15,9 +16,17 @@ export default function ContactForms() {
 
   return (
     <div>
+      <AnimatePresence mode="wait">
       {/* ─── Selector Cards ─── */}
       {formType === "select" ? (
-        <div className="grid gap-6 md:grid-cols-2">
+        <motion.div
+          key="select"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="grid gap-6 md:grid-cols-2"
+        >
           <button
             type="button"
             onClick={() => setFormType("enquiry")}
@@ -49,9 +58,16 @@ export default function ContactForms() {
               Submit a brief &rarr;
             </span>
           </button>
-        </div>
+        </motion.div>
       ) : (
-        <div className="mx-auto max-w-xl">
+        <motion.div
+          key={formType}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="mx-auto max-w-xl"
+        >
           <button
             type="button"
             onClick={() => setFormType("select")}
@@ -61,8 +77,9 @@ export default function ContactForms() {
           </button>
 
           {formType === "enquiry" ? <EnquiryForm /> : <BriefForm />}
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }

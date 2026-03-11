@@ -93,6 +93,7 @@ export const useCartStore = create<CartState>()(
     {
       name: "waves-cart",
       partialize: (state) => ({ cart: state.cart }),
+      skipHydration: true,
     }
   )
 );

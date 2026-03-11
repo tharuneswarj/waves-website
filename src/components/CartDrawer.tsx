@@ -234,7 +234,7 @@ export default function CartDrawer() {
                 {/* Buttons */}
                 <div className="flex flex-col gap-3">
                   <a
-                    href={cart?.checkoutUrl}
+                    href={cart?.checkoutUrl ?? "#"}
                     className="block w-full rounded-full bg-accent py-3.5 text-center font-sans text-sm font-medium tracking-wide text-white transition-colors hover:bg-accent-dark"
                   >
                     Checkout

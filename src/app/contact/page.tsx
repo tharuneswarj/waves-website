@@ -6,6 +6,19 @@ export const metadata: Metadata = {
   title: "Contact - Waves Company",
   description:
     "Get in touch — whether you want to buy a lamp or have a custom lighting project in mind.",
+  openGraph: {
+    title: "Contact - Waves Company",
+    description:
+      "Get in touch — whether you want to buy a lamp or have a custom lighting project in mind.",
+    images: [
+      {
+        url: "/logos/Cream_and_Blue__Logo.png",
+        width: 800,
+        height: 600,
+        alt: "Waves Company logo",
+      },
+    ],
+  },
 };
 
 export default function ContactPage() {

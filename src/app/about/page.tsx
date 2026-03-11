@@ -7,6 +7,19 @@ export const metadata: Metadata = {
   title: "About - Waves Company",
   description:
     "A printer, a gift, and a tilde. The origin story of Waves Company — algorithmically crafted lighting objects.",
+  openGraph: {
+    title: "About - Waves Company",
+    description:
+      "A printer, a gift, and a tilde. The origin story of Waves Company — algorithmically crafted lighting objects.",
+    images: [
+      {
+        url: "/logos/Cream_and_Blue__Logo.png",
+        width: 800,
+        height: 600,
+        alt: "Waves Company logo",
+      },
+    ],
+  },
 };
 
 const chapters = [

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProductByHandle, getAllProducts } from "@/lib/shopify";
+import { getDesignStory, getProductSpecs } from "@/lib/product-content";
 import ProductGallery from "@/components/ProductGallery";
 import ProductForm from "@/components/ProductForm";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -52,6 +53,8 @@ export default async function ProductPage({ params }: PageProps) {
 
   const images = product.images.edges.map((e) => e.node);
   const variants = product.variants.edges.map((e) => e.node);
+  const designStory = getDesignStory(handle);
+  const specs = getProductSpecs(handle);
 
   return (
     <main className="pt-24">
@@ -79,30 +82,13 @@ export default async function ProductPage({ params }: PageProps) {
           </ScrollReveal>
 
           <div className="space-y-6">
-            <ScrollReveal>
-              <p className="text-base font-light leading-relaxed text-surface/80">
-                Every Waves lamp begins as parametric logic — a set of
-                mathematical rules that define curvature, layer rhythm, and
-                structural integrity. The form is not drawn; it is generated
-                through computation and refined through judgment.
-              </p>
-            </ScrollReveal>
-            <ScrollReveal>
-              <p className="text-base font-light leading-relaxed text-surface/80">
-                The toolpath is where the real design happens. Unlike standard
-                slicing software that treats every layer identically, we write
-                custom G-code that varies speed, extrusion, and layer height to
-                create surface texture and light diffusion patterns unique to
-                each piece.
-              </p>
-            </ScrollReveal>
-            <ScrollReveal>
-              <p className="text-base font-light leading-relaxed text-surface/80">
-                After printing, each lamp is hand-finished — wired, assembled,
-                and quality-checked. The base is fitted, the cord is measured,
-                and the bulb is tested for the precise warmth we intend.
-              </p>
-            </ScrollReveal>
+            {designStory.map((paragraph, i) => (
+              <ScrollReveal key={i}>
+                <p className="text-base font-light leading-relaxed text-surface/80">
+                  {paragraph}
+                </p>
+              </ScrollReveal>
+            ))}
           </div>
 
           <ScrollReveal>
@@ -133,16 +119,7 @@ export default async function ProductPage({ params }: PageProps) {
             <div className="overflow-hidden rounded-lg border border-primary/10">
               <table className="w-full">
                 <tbody className="divide-y divide-primary/10">
-                  {[
-                    ["Dimensions", "H 280mm × W 180mm"],
-                    ["Weight", "~450g"],
-                    ["Material", "PLA (plant-based polymer)"],
-                    ["Bulb", "E27, max 12W LED (warm white recommended)"],
-                    ["Cord length", "1.8m with inline switch"],
-                    ["Base", "Standard / CNC wood base"],
-                    ["Print time", "19h 42m"],
-                    ["Layer height", "0.16mm"],
-                  ].map(([label, value]) => (
+                  {specs.map(([label, value]) => (
                     <tr key={label}>
                       <td className="px-5 py-3 font-mono text-xs tracking-wide text-primary/50">
                         {label}

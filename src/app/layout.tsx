@@ -3,6 +3,8 @@ import { DM_Serif_Display, DM_Sans, DM_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import CartHydration from "@/components/CartHydration";
+import PageTransition from "@/components/PageTransition";
 import "./globals.css";
 
 const dmSerifDisplay = DM_Serif_Display({
@@ -27,9 +29,30 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Waves Company",
+  metadataBase: new URL("https://waves.company"),
+  title: {
+    default: "Waves Company",
+    template: "%s — Waves Company",
+  },
   description:
     "Lighting objects designed through code, material honesty, and human touch.",
+  openGraph: {
+    title: "Waves Company",
+    description:
+      "Lighting objects designed through code, material honesty, and human touch.",
+    url: "https://waves.company",
+    siteName: "Waves Company",
+    images: [
+      {
+        url: "/logos/Cream_and_Blue__Logo.png",
+        width: 800,
+        height: 600,
+        alt: "Waves Company logo",
+      },
+    ],
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -42,8 +65,9 @@ export default function RootLayout({
       <body
         className={`${dmSerifDisplay.variable} ${dmSans.variable} ${dmMono.variable} antialiased`}
       >
+        <CartHydration />
         <Header />
-        {children}
+        <PageTransition>{children}</PageTransition>
         <Footer />
         <CartDrawer />
       </body>

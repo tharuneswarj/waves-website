@@ -9,6 +9,19 @@ export const metadata: Metadata = {
   title: "Shop - Waves Company",
   description:
     "Algorithmically crafted lighting objects. Each piece is printed over many hours. Good light is not rushed.",
+  openGraph: {
+    title: "Shop - Waves Company",
+    description:
+      "Algorithmically crafted lighting objects. Each piece is printed over many hours. Good light is not rushed.",
+    images: [
+      {
+        url: "/logos/Cream_and_Blue__Logo.png",
+        width: 800,
+        height: 600,
+        alt: "Waves Company logo",
+      },
+    ],
+  },
 };
 
 function formatMinPrice(product: ShopifyProduct): string {

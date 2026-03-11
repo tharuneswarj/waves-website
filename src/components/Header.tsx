@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/cart-store";
 
 const navLinks = [
@@ -15,16 +16,35 @@ const navLinks = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { openCart, cart } = useCartStore();
   const itemCount = cart?.totalQuantity ?? 0;
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Transparent header on homepage above the fold
+  const isTransparent = isHome && !scrolled && !mobileOpen;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-sm">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+        isTransparent
+          ? "bg-transparent"
+          : "bg-surface/95 backdrop-blur-sm"
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
         {/* Logo */}
         <Link href="/" className="relative z-50 shrink-0" aria-label="Waves Company home">
           <Image
-            src="/logos/Cream_and_Blue__Logo.png"
+            src={isTransparent ? "/logos/Blue_and_Cream__Logo.png" : "/logos/Cream_and_Blue__Logo.png"}
             alt="Waves Company"
             width={120}
             height={48}
@@ -39,7 +59,9 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="font-sans text-sm font-medium tracking-wide text-primary transition-colors hover:text-accent"
+              className={`font-sans text-sm font-medium tracking-wide transition-colors hover:text-accent ${
+                isTransparent ? "text-surface" : "text-primary"
+              }`}
             >
               {link.label}
             </Link>
@@ -52,7 +74,9 @@ export default function Header() {
           <button
             type="button"
             aria-label="Open cart"
-            className="relative z-50 p-2 text-primary transition-colors hover:text-accent"
+            className={`relative z-50 p-2 transition-colors hover:text-accent ${
+              isTransparent ? "text-surface" : "text-primary"
+            }`}
             onClick={openCart}
           >
             <svg
@@ -86,19 +110,19 @@ export default function Header() {
             onClick={() => setMobileOpen((prev) => !prev)}
           >
             <span
-              className={`block h-0.5 w-6 bg-primary transition-all duration-300 ${
-                mobileOpen ? "translate-y-2 rotate-45" : ""
-              }`}
+              className={`block h-0.5 w-6 transition-all duration-300 ${
+                isTransparent ? "bg-surface" : "bg-primary"
+              } ${mobileOpen ? "translate-y-2 rotate-45" : ""}`}
             />
             <span
-              className={`block h-0.5 w-6 bg-primary transition-all duration-300 ${
-                mobileOpen ? "opacity-0" : ""
-              }`}
+              className={`block h-0.5 w-6 transition-all duration-300 ${
+                isTransparent ? "bg-surface" : "bg-primary"
+              } ${mobileOpen ? "opacity-0" : ""}`}
             />
             <span
-              className={`block h-0.5 w-6 bg-primary transition-all duration-300 ${
-                mobileOpen ? "-translate-y-2 -rotate-45" : ""
-              }`}
+              className={`block h-0.5 w-6 transition-all duration-300 ${
+                isTransparent ? "bg-surface" : "bg-primary"
+              } ${mobileOpen ? "-translate-y-2 -rotate-45" : ""}`}
             />
           </button>
         </div>

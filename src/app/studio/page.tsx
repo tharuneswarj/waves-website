@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { getAllProjects } from "@/lib/projects";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -8,6 +9,19 @@ export const metadata: Metadata = {
   title: "Studio - Waves Company",
   description:
     "Custom lighting for architects and designers. Pendant configurations, scale variations, and bespoke forms adapted to your brief.",
+  openGraph: {
+    title: "Studio - Waves Company",
+    description:
+      "Custom lighting for architects and designers. Pendant configurations, scale variations, and bespoke forms adapted to your brief.",
+    images: [
+      {
+        url: "/logos/Cream_and_Blue__Logo.png",
+        width: 800,
+        height: 600,
+        alt: "Waves Company logo",
+      },
+    ],
+  },
 };
 
 const capabilities = [
@@ -64,7 +78,13 @@ export default function StudioPage() {
                   <div className="overflow-hidden rounded-lg">
                     {project.heroImage ? (
                       <div className="relative aspect-[4/3] bg-primary/5">
-                        {/* When images are available, use next/image here */}
+                        <Image
+                          src={project.heroImage.url}
+                          alt={project.heroImage.alt}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        />
                       </div>
                     ) : (
                       <PlaceholderImage

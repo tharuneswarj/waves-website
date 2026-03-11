@@ -64,7 +64,7 @@ export default function CompareSlider({
 
       {/* Right side (after) — clipped */}
       <div
-        className="absolute inset-0 flex items-center justify-center bg-primary/8"
+        className="absolute inset-0 flex items-center justify-center bg-primary/[0.08]"
         style={{ clipPath: `inset(0 0 0 ${position}%)` }}
       >
         <span className="px-4 text-center font-mono text-xs tracking-wide text-primary/60">

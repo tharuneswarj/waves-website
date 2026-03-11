@@ -8,6 +8,19 @@ export const metadata: Metadata = {
   title: "Process - Waves Company",
   description:
     "Most 3D printed lighting is made in vase mode. We took a different approach.",
+  openGraph: {
+    title: "Process - Waves Company",
+    description:
+      "Most 3D printed lighting is made in vase mode. We took a different approach.",
+    images: [
+      {
+        url: "/logos/Cream_and_Blue__Logo.png",
+        width: 800,
+        height: 600,
+        alt: "Waves Company logo",
+      },
+    ],
+  },
 };
 
 const stages = [
