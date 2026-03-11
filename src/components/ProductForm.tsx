@@ -323,28 +323,22 @@ export default function ProductForm({
               Select Cable
             </legend>
             <div className="flex gap-3">
-              {cableOptions.map((cable) => {
-                const isLinen = cable.toLowerCase() === "linen";
-                return (
-                  <button
-                    key={cable}
-                    type="button"
-                    onClick={() => pickCable(cable)}
-                    className={`flex-1 rounded-xl border py-4 px-5 text-center transition-colors ${
-                      selectedCable === cable
-                        ? "border-primary bg-primary text-surface"
-                        : "border-primary/15 text-primary hover:border-primary/40"
-                    }`}
-                  >
-                    <span className="block font-sans text-sm font-medium">
-                      {cable}
-                    </span>
-                    <span className="mt-0.5 block font-sans text-[11px] font-light opacity-60">
-                      {isLinen ? "Natural braided linen" : "Matte black fabric"}
-                    </span>
-                  </button>
-                );
-              })}
+              {cableOptions.map((cable) => (
+                <button
+                  key={cable}
+                  type="button"
+                  onClick={() => pickCable(cable)}
+                  className={`flex-1 rounded-xl border py-4 px-5 text-center transition-colors ${
+                    selectedCable === cable
+                      ? "border-primary bg-primary text-surface"
+                      : "border-primary/15 text-primary hover:border-primary/40"
+                  }`}
+                >
+                  <span className="block font-sans text-sm font-medium">
+                    {cable}
+                  </span>
+                </button>
+              ))}
             </div>
           </fieldset>
         )}
@@ -364,7 +358,7 @@ export default function ProductForm({
           )}
           {selectedBase && (
             <span className="rounded-full border border-primary/15 px-3 py-1 font-sans text-xs text-primary/70">
-              {selectedBase.toLowerCase().includes("print") ? "3D Printed Base" : "Teak Base"}
+              {selectedBase}
             </span>
           )}
           {selectedCable && (

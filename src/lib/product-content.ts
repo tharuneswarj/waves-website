@@ -18,7 +18,7 @@ export function getDesignStory(): string[] {
   ];
 }
 
-/** Parse the shade_colours JSON metafield → {shade: hex}. Falls back to hardcoded. */
+/** Parse the shade_colours JSON metafield → {shade: hex}. */
 export function getShadeColours(
   product?: ShopifyProduct | null
 ): Record<string, string> {
@@ -27,24 +27,19 @@ export function getShadeColours(
       const parsed = JSON.parse(product.shadeColours.value);
       if (parsed && typeof parsed === "object") return parsed;
     } catch {
-      // fall through to hardcoded
+      // ignore
     }
   }
-  return {
-    Chalk: "#F5F0E8",
-    Sand: "#C8A882",
-    Amber: "#D4824A",
-    Smoke: "#6B6560",
-  };
+  return {};
 }
 
-/** Build the specs array from individual metafields. Falls back to hardcoded. */
+/** Build the specs array from individual metafields. */
 export function getProductSpecs(
   handle: string,
   product?: ShopifyProduct | null
 ): [string, string][] {
+  const specs: [string, string][] = [];
   if (product) {
-    const specs: [string, string][] = [];
     if (product.dimensions?.value) specs.push(["Dimensions", product.dimensions.value]);
     if (product.weight?.value) specs.push(["Weight", product.weight.value]);
     if (product.material?.value) specs.push(["Material", product.material.value]);
@@ -52,17 +47,13 @@ export function getProductSpecs(
     if (product.cordLength?.value) specs.push(["Cord length", product.cordLength.value]);
     if (product.printTime?.value) specs.push(["Print time", product.printTime.value]);
     if (product.layerHeight?.value) specs.push(["Layer height", product.layerHeight.value]);
-    if (specs.length > 0) return specs;
   }
-  return hardcodedSpecs[handle] ?? defaultSpecs;
+  return specs;
 }
 
-/** Get usage & care from metafield, or fall back to hardcoded. */
+/** Get usage & care from metafield. */
 export function getUsageCare(product?: ShopifyProduct | null): string {
-  return (
-    product?.usageCare?.value ??
-    "Use an E14 LED bulb, warm white, max 22W. Keep away from prolonged direct sunlight and heat above 50°C. Clean with a soft dry cloth only. Always switch off before changing the bulb."
-  );
+  return product?.usageCare?.value ?? "";
 }
 
 // ──────────────────────────────────────
@@ -98,33 +89,4 @@ const defaultDesignStory: DesignStory = {
   ],
 };
 
-const hardcodedSpecs: Record<string, [string, string][]> = {
-  ripple: [
-    ["Dimensions", "H 200mm × W 80mm"],
-    ["Weight", "~300g"],
-    ["Material", "PLA (plant-based polymer)"],
-    ["Bulb", "E14, max 22W LED (warm white recommended)"],
-    ["Cord length", "1.8m with inline switch"],
-    ["Print time", "12h 20m"],
-    ["Layer height", "Varies 1mm – 2mm"],
-  ],
-  hourglass: [
-    ["Dimensions", "H 180mm × W 80mm"],
-    ["Weight", "~280g"],
-    ["Material", "PLA (plant-based polymer)"],
-    ["Bulb", "E14, max 22W LED (warm white recommended)"],
-    ["Cord length", "1.8m with inline switch"],
-    ["Print time", "08h 42m"],
-    ["Layer height", "Varies 1mm – 2mm"],
-  ],
-};
 
-const defaultSpecs: [string, string][] = [
-  ["Dimensions", "H 280mm × W 180mm"],
-  ["Weight", "~450g"],
-  ["Material", "PLA (plant-based polymer)"],
-  ["Bulb", "E27, max 12W LED (warm white recommended)"],
-  ["Cord length", "1.8m with inline switch"],
-  ["Print time", "19h 42m"],
-  ["Layer height", "0.16mm"],
-];
