@@ -84,7 +84,7 @@ export default function AboutPage() {
       <section className="px-6 pb-8 pt-12 lg:pb-12 lg:pt-16">
         <div className="mx-auto max-w-3xl text-center">
           <ScrollReveal>
-            <p className="font-mono text-xs uppercase tracking-widest text-primary/40">
+            <p className="font-mono text-xs uppercase tracking-widest text-primary/65">
               Origin story
             </p>
             <h1 className="mt-4 text-4xl md:text-5xl lg:text-6xl">
@@ -200,7 +200,7 @@ export default function AboutPage() {
       <section className="px-6 py-section lg:py-section-lg">
         <div className="mx-auto max-w-3xl text-center">
           <ScrollReveal>
-            <p className="font-mono text-xs tracking-wide text-primary/40">
+            <p className="font-mono text-xs tracking-wide text-primary/65">
               Still printing. Still curious.
             </p>
           </ScrollReveal>

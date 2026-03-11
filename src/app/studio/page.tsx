@@ -101,7 +101,7 @@ export default function StudioPage() {
                     <p className="mt-1 text-sm font-normal text-primary/60">
                       {project.type}
                     </p>
-                    <p className="mt-1 font-mono text-[11px] tracking-wide text-primary/40">
+                    <p className="mt-1 font-mono text-[11px] tracking-wide text-primary/65">
                       {project.location}
                     </p>
                   </div>

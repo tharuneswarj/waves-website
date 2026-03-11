@@ -28,7 +28,7 @@ export default async function Home() {
   return (
     <main>
       {/* ─── Section 1: Hero ─── */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center bg-primary px-6 text-center text-surface">
+      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-primary px-6 text-center text-surface">
         {/* Animated wave mark */}
         <div className="mb-10">
           <WaveMark />
@@ -103,7 +103,7 @@ export default async function Home() {
                     <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
                       {product.title}
                     </h2>
-                    <span className="font-mono text-xs tracking-wide text-primary/60">
+                    <span className="font-mono text-xs tracking-wide text-primary/75">
                       From {formatMinPrice(product)}
                     </span>
                   </div>
@@ -126,7 +126,7 @@ export default async function Home() {
                     <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
                       Ripple
                     </h2>
-                    <span className="font-mono text-xs tracking-wide text-primary/60">
+                    <span className="font-mono text-xs tracking-wide text-primary/75">
                       From &#8377;4,999
                     </span>
                   </div>
@@ -145,7 +145,7 @@ export default async function Home() {
                     <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
                       Hourglass
                     </h2>
-                    <span className="font-mono text-xs tracking-wide text-primary/60">
+                    <span className="font-mono text-xs tracking-wide text-primary/75">
                       From &#8377;4,999
                     </span>
                   </div>

@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProductByHandle, getAllProducts } from "@/lib/shopify";
-import { getDesignStory, getProductSpecs } from "@/lib/product-content";
-import ProductGallery from "@/components/ProductGallery";
-import ProductForm from "@/components/ProductForm";
+import { getDesignStory, getProductSpecs, getShadeColours, getUsageCare } from "@/lib/product-content";
+import ProductHero from "@/components/ProductHero";
 import ScrollReveal from "@/components/ScrollReveal";
 import PlaceholderImage from "@/components/PlaceholderImage";
 
@@ -53,23 +52,24 @@ export default async function ProductPage({ params }: PageProps) {
 
   const images = product.images.edges.map((e) => e.node);
   const variants = product.variants.edges.map((e) => e.node);
-  const designStory = getDesignStory(handle);
-  const specs = getProductSpecs(handle);
+  const designStory = getDesignStory();
+  const specs = getProductSpecs(handle, product);
+  const shadeColours = getShadeColours(product);
+  const usageCare = getUsageCare(product);
 
   return (
     <main className="pt-24">
       {/* ─── Section 1: Product Hero ─── */}
-      <section className="px-6 pb-section pt-8 lg:pb-section-lg lg:pt-12">
-        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.5fr_1fr] lg:gap-16">
-          {/* Gallery — left */}
-          <ProductGallery images={images} productTitle={product.title} />
-
-          {/* Product info — right */}
-          <div className="flex flex-col gap-2">
-            <h1 className="text-4xl md:text-5xl">{product.title}</h1>
-            <ProductForm variants={variants} description={product.description} />
-          </div>
-        </div>
+      <section className="px-4 pb-section pt-4 sm:px-6 lg:pb-section-lg lg:pt-10">
+        <ProductHero
+          images={images}
+          variants={variants}
+          productTitle={product.title}
+          descriptionHtml={product.descriptionHtml}
+          specs={specs}
+          shadeColours={shadeColours}
+          usageCare={usageCare}
+        />
       </section>
 
       {/* ─── Section 2: Design Story ─── */}

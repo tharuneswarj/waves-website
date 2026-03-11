@@ -157,7 +157,7 @@ export default async function ProjectPage({ params }: PageProps) {
         <section className="px-6 py-section lg:py-section-lg">
           <div className="mx-auto max-w-3xl text-center">
             <ScrollReveal>
-              <p className="font-mono text-xs uppercase tracking-widest text-primary/40">
+              <p className="font-mono text-xs uppercase tracking-widest text-primary/65">
                 Next project
               </p>
               <Link
@@ -166,7 +166,7 @@ export default async function ProjectPage({ params }: PageProps) {
               >
                 {nextProject.title}
               </Link>
-              <p className="mt-2 text-sm font-normal text-primary/50">
+              <p className="mt-2 text-sm font-normal text-primary/70">
                 {nextProject.type}
               </p>
             </ScrollReveal>

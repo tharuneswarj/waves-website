@@ -88,7 +88,7 @@ export default async function ShopPage() {
                       <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
                         {product.title}
                       </h2>
-                      <span className="font-mono text-xs tracking-wide text-primary/60">
+                      <span className="font-mono text-xs tracking-wide text-primary/75">
                         From {formatMinPrice(product)}
                       </span>
                     </div>
@@ -110,7 +110,7 @@ export default async function ShopPage() {
                       <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
                         {name}
                       </h2>
-                      <span className="font-mono text-xs tracking-wide text-primary/60">
+                      <span className="font-mono text-xs tracking-wide text-primary/75">
                         From &#8377;4,999
                       </span>
                     </div>

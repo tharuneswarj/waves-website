@@ -128,7 +128,7 @@ export default function ProcessPage() {
                       </p>
                     )}
                     {stage.mono && (
-                      <p className="mt-5 font-mono text-[11px] tracking-wide text-primary/40">
+                      <p className="mt-5 font-mono text-[11px] tracking-wide text-primary/65">
                         {stage.mono}
                       </p>
                     )}

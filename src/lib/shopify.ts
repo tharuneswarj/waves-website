@@ -54,6 +54,11 @@ export interface ShopifyProductVariant {
   selectedOptions: { name: string; value: string }[];
 }
 
+export interface ShopifyMetafield {
+  key: string;
+  value: string;
+}
+
 export interface ShopifyProduct {
   id: string;
   handle: string;
@@ -68,6 +73,16 @@ export interface ShopifyProduct {
     maxVariantPrice: ShopifyPrice;
   };
   tags: string[];
+  /** Waves custom metafields — populated after running scripts/seed-metafields.js */
+  shadeColours: ShopifyMetafield | null;
+  usageCare: ShopifyMetafield | null;
+  dimensions: ShopifyMetafield | null;
+  weight: ShopifyMetafield | null;
+  material: ShopifyMetafield | null;
+  bulbSpec: ShopifyMetafield | null;
+  cordLength: ShopifyMetafield | null;
+  printTime: ShopifyMetafield | null;
+  layerHeight: ShopifyMetafield | null;
 }
 
 export interface ShopifyCartLine {
@@ -113,7 +128,7 @@ const PRODUCT_FRAGMENT = /* GraphQL */ `
       width
       height
     }
-    images(first: 10) {
+    images(first: 20) {
       edges {
         node {
           url
@@ -123,7 +138,7 @@ const PRODUCT_FRAGMENT = /* GraphQL */ `
         }
       }
     }
-    variants(first: 10) {
+    variants(first: 100) {
       edges {
         node {
           id
@@ -151,6 +166,15 @@ const PRODUCT_FRAGMENT = /* GraphQL */ `
       }
     }
     tags
+    shadeColours: metafield(namespace: "waves", key: "shade_colours") { key value }
+    usageCare: metafield(namespace: "waves", key: "usage_care") { key value }
+    dimensions: metafield(namespace: "waves", key: "dimensions") { key value }
+    weight: metafield(namespace: "waves", key: "weight") { key value }
+    material: metafield(namespace: "waves", key: "material") { key value }
+    bulbSpec: metafield(namespace: "waves", key: "bulb_spec") { key value }
+    cordLength: metafield(namespace: "waves", key: "cord_length") { key value }
+    printTime: metafield(namespace: "waves", key: "print_time") { key value }
+    layerHeight: metafield(namespace: "waves", key: "layer_height") { key value }
   }
 `;
 

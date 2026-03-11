@@ -12,7 +12,7 @@ export default function WaveMark() {
         viewBox="0 0 120 80"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="h-20 w-20 md:h-28 md:w-28"
+        className="h-52 w-52 md:h-72 md:w-72"
         aria-label="Waves logo mark"
       >
         <path
