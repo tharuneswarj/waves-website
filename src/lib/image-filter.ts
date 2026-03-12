@@ -2,6 +2,8 @@
 // Tag format: "Alt text description [tag1|tag2|tag3]"
 // Images with no tags are always shown.
 
+import { getOptionTag } from "./option-content";
+
 export interface ImageTags {
   shade: string | null;   // chalk | sand | amber | smoke
   base: string | null;    // printed | wood
@@ -53,23 +55,27 @@ export function imageMatchesSelections(
   // Untagged images always show
   if (!hasAnyTag) return true;
 
+  const selectedShadeTag = getOptionTag(selections.shade);
+  const selectedBaseTag = getOptionTag(selections.base);
+  const selectedCableTag = getOptionTag(selections.cable);
+
   // If shade not yet selected, show everything
   if (selections.shade === null) return true;
 
   // Shade tag must match if present
-  if (tags.shade !== null && tags.shade !== selections.shade.toLowerCase()) return false;
+  if (tags.shade !== null && tags.shade !== selectedShadeTag) return false;
 
   // If base not yet selected, stop here — show shade-matched images
   if (selections.base === null) return true;
 
   // Base tag must match if present
-  if (tags.base !== null && tags.base !== selections.base.toLowerCase()) return false;
+  if (tags.base !== null && tags.base !== selectedBaseTag) return false;
 
   // If cable not yet selected, stop here — show shade+base matched images
   if (selections.cable === null) return true;
 
   // Cable tag must match if present
-  if (tags.cable !== null && tags.cable !== selections.cable.toLowerCase()) return false;
+  if (tags.cable !== null && tags.cable !== selectedCableTag) return false;
 
   return true;
 }
