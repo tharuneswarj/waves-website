@@ -2,7 +2,7 @@
 
 *Branch: master*
 *Generated: 13 March 2026*
-*Status: READY FOR CLAUDE CODE*
+*Status: COMPLETE*
 
 ---
 
@@ -265,6 +265,14 @@ export const metadata: Metadata = {
 
 ## Completed
 
+- [x] sitemap.ts — `src/app/sitemap.ts` (13 March 2026)
+- [x] robots.ts — `src/app/robots.ts` (13 March 2026)
+- [x] JSON-LD structured data — product pages (13 March 2026)
+- [x] JSON-LD structured data — homepage Organisation (13 March 2026)
+- [x] Fix OG image double-underscore typo in layout.tsx (13 March 2026)
+- [x] Fix product image alt text — Shopify Admin task (flagged, not a code change)
+- [x] Checkout handoff — associateCustomerWithCart + CartDrawer handler (13 March 2026)
+- [x] Favicon — added icons to layout.tsx metadata (13 March 2026)
 - [x] Headless customer accounts — Phase 1 (auth modal, Zustand store, protected routing)
 - [x] Headless customer accounts — Phase 2 (orders, order detail pages, address book, account details, password change)
 - [x] Progressive gallery filtering via alt text tags (`src/lib/image-filter.ts`)

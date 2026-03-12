@@ -400,6 +400,21 @@ export async function removeFromCart(
   return data.cartLinesRemove.cart;
 }
 
+export async function associateCustomerWithCart(
+  cartId: string,
+  customerAccessToken: string
+): Promise<void> {
+  await shopifyFetch(
+    `mutation cartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
+      cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+        cart { id }
+        userErrors { field message }
+      }
+    }`,
+    { cartId, buyerIdentity: { customerAccessToken } }
+  );
+}
+
 export async function getCart(cartId: string): Promise<ShopifyCart | null> {
   const data = await shopifyFetch<{
     cart: ShopifyCart | null;

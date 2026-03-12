@@ -44,14 +44,18 @@ export const metadata: Metadata = {
     siteName: "Waves Company",
     images: [
       {
-        url: "/logos/Cream_and_Blue__Logo.png",
-        width: 800,
-        height: 600,
-        alt: "Waves Company logo",
+        url: "/logos/Cream_and_Blue_Logo_v2.png",
+        width: 1200,
+        height: 630,
+        alt: "Waves Company",
       },
     ],
     locale: "en_IN",
     type: "website",
+  },
+  icons: {
+    icon: "/logos/Favicon_Logo.png",
+    apple: "/logos/Favicon_Logo.png",
   },
 };
 

@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/cart-store";
+import { useAuthStore } from "@/lib/auth-store";
+import { associateCustomerWithCart } from "@/lib/shopify";
 import type { ShopifyPrice } from "@/lib/shopify";
 
 function formatPrice(price: ShopifyPrice): string {
@@ -19,6 +21,15 @@ function formatPrice(price: ShopifyPrice): string {
 export default function CartDrawer() {
   const { cart, isOpen, loading, closeCart, updateItem, removeItem } =
     useCartStore();
+  const { accessToken } = useAuthStore();
+
+  const handleCheckout = async () => {
+    if (!cart) return;
+    if (cart.id && accessToken) {
+      await associateCustomerWithCart(cart.id, accessToken);
+    }
+    window.location.href = cart.checkoutUrl;
+  };
 
   const lines = cart?.lines.edges.map((e) => e.node) ?? [];
   const isEmpty = lines.length === 0;
@@ -233,12 +244,13 @@ export default function CartDrawer() {
 
                 {/* Buttons */}
                 <div className="flex flex-col gap-3">
-                  <a
-                    href={cart?.checkoutUrl ?? "#"}
+                  <button
+                    type="button"
+                    onClick={handleCheckout}
                     className="block w-full rounded-full bg-accent py-3.5 text-center font-sans text-sm font-medium tracking-wide text-white transition-colors hover:bg-accent-dark"
                   >
                     Checkout
-                  </a>
+                  </button>
                   <button
                     type="button"
                     onClick={closeCart}

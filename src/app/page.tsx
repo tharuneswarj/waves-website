@@ -27,6 +27,25 @@ export default async function Home() {
 
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Waves Company",
+            url: "https://waves.company",
+            logo: "https://waves.company/logos/Cream_and_Blue_Logo_v2.png",
+            description: "Algorithmically crafted lighting objects. Designed through computation, made by hand.",
+            contactPoint: {
+              "@type": "ContactPoint",
+              email: "hello@waves.company",
+              contactType: "customer service",
+            },
+            sameAs: ["https://instagram.com/waves_company_"],
+          }),
+        }}
+      />
       {/* ─── Section 1: Hero ─── */}
       <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-primary px-6 text-center text-surface">
         {/* Animated wave mark */}

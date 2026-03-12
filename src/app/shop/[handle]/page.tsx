@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getProductByHandle, getAllProducts } from "@/lib/shopify";
+import { getProductByHandle, getAllProducts, type ShopifyProduct } from "@/lib/shopify";
 import { getDesignStory, getProductSpecs, getShadeColours, getUsageCare } from "@/lib/product-content";
 import ProductHero from "@/components/ProductHero";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -18,12 +18,44 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     if (!product) return { title: "Product Not Found - Waves Company" };
 
     return {
-      title: `${product.title} - Waves Company`,
+      title: `${product.title} — Waves Company`,
       description: product.description.slice(0, 160),
+      openGraph: {
+        title: `${product.title} — Waves Company`,
+        description: product.description.slice(0, 160),
+        images: product.featuredImage
+          ? [{ url: product.featuredImage.url, width: 1200, height: 1600, alt: product.featuredImage.altText || product.title }]
+          : undefined,
+      },
     };
   } catch {
     return { title: `${handle} - Waves Company` };
   }
+}
+
+function buildProductJsonLd(product: ShopifyProduct, handle: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description,
+    url: `https://waves.company/shop/${handle}`,
+    brand: {
+      "@type": "Brand",
+      name: "Waves Company",
+    },
+    image: product.featuredImage?.url ? [product.featuredImage.url] : undefined,
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: product.priceRange.minVariantPrice.currencyCode,
+      lowPrice: product.priceRange.minVariantPrice.amount,
+      availability: "https://schema.org/InStock",
+      seller: {
+        "@type": "Organization",
+        name: "Waves Company",
+      },
+    },
+  };
 }
 
 export async function generateStaticParams() {
@@ -59,6 +91,10 @@ export default async function ProductPage({ params }: PageProps) {
 
   return (
     <main className="pt-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildProductJsonLd(product, handle)) }}
+      />
       {/* ─── Section 1: Product Hero ─── */}
       <section className="px-4 pb-section pt-4 sm:px-6 lg:pb-section-lg lg:pt-10">
         <ProductHero
