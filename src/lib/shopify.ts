@@ -11,7 +11,7 @@ interface ShopifyResponse<T> {
   errors?: { message: string }[];
 }
 
-async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+export async function shopifyFetch<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
   const res = await fetch(endpoint, {
     method: "POST",
     headers: {

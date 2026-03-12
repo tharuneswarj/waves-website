@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/cart-store";
+import { useAuthStore } from "@/lib/auth-store";
+import AuthModal from "./AuthModal";
 
 const navLinks = [
   { href: "/shop", label: "Shop" },
@@ -16,8 +18,10 @@ const navLinks = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { openCart, cart } = useCartStore();
+  const { customer } = useAuthStore();
   const itemCount = cart?.totalQuantity ?? 0;
   const pathname = usePathname();
   const isHome = pathname === "/";
@@ -81,8 +85,60 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Right side: cart + mobile toggle */}
+        {/* Right side: account + cart + mobile toggle */}
         <div className="flex items-center gap-4">
+          {/* Account icon/link */}
+          {customer ? (
+            <Link
+              href="/account"
+              className={`relative z-50 flex items-center gap-1.5 p-2 transition-colors hover:text-accent ${
+                isTransparent ? "text-surface" : "text-primary"
+              }`}
+              aria-label="Account"
+            >
+              <span className="hidden font-sans text-xs font-medium uppercase tracking-wider md:block">
+                {customer.firstName.slice(0, 10)}
+              </span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </Link>
+          ) : (
+            <button
+              onClick={() => setAuthModalOpen(true)}
+              className={`relative z-50 p-2 transition-colors hover:text-accent ${
+                isTransparent ? "text-surface" : "text-primary"
+              }`}
+              aria-label="Sign in"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </button>
+          )}
+
           {/* Cart icon */}
           <button
             type="button"
@@ -158,6 +214,9 @@ export default function Header() {
           </nav>
         </div>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </header>
   );
 }
