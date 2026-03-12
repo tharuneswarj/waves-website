@@ -1,223 +1,139 @@
-# Waves Website - Asset Todo
+# Waves Website — Asset Todo
 
-*Updated: 11 March 2026*
+*Updated: 13 March 2026*
 
-Everything below is for Tharun to produce manually. Each asset specifies the exact filename, dimensions, and where it's used in the codebase so the code can reference it directly once added.
-
----
-
-## Photography Needed
-
-### Product - Ripple Hero
-- **Filename:** `ripple-hero.jpg`
-- **Location:** `/public/images/products/ripple/`
-- **Dimensions:** 1200x1600px minimum (3:4 aspect ratio)
-- **What to shoot:** Ripple table lamp, switched off, on a clean surface. Full product visible including base and cord.
-- **Lighting:** Soft natural side light from left. Warm tone. No harsh shadows.
-- **Background:** Wooden surface or neutral matte. Minimal styling - maybe a book or small object for scale. Reference the existing Ripple lamp hero shot benchmark.
-- **Used in:** Homepage featured products, Shop page grid, Product page gallery (main image)
-
-### Product - Ripple Lit
-- **Filename:** `ripple-lit.jpg`
-- **Location:** `/public/images/products/ripple/`
-- **Dimensions:** 1200x1600px minimum (3:4 aspect ratio)
-- **What to shoot:** Ripple lamp switched ON in a dim/dark environment. Focus on light diffusion through the layers - the gradient from opaque base to translucent top.
-- **Lighting:** Only the lamp itself. Dark room. Let the printed layers glow.
-- **Background:** Dark, receding. The lamp should be the light source.
-- **Used in:** Product page gallery, Homepage hover state
-
-### Product - Ripple Detail
-- **Filename:** `ripple-detail-layers.jpg`
-- **Location:** `/public/images/products/ripple/`
-- **Dimensions:** 1200x1200px minimum (1:1 square)
-- **What to shoot:** Extreme close-up of the Ripple's surface texture. The printed layers, the toolpath direction changes, the wall thickness variation.
-- **Lighting:** Raking side light to emphasise layer texture. Warm.
-- **Background:** N/A - tight crop on the surface.
-- **Used in:** Product page gallery
-
-### Product - Ripple In Context
-- **Filename:** `ripple-context-bedside.jpg`
-- **Location:** `/public/images/products/ripple/`
-- **Dimensions:** 1200x1500px minimum (4:5 aspect ratio)
-- **What to shoot:** Ripple lamp on a bedside table in a real bedroom. Switched on, evening light.
-- **Lighting:** Warm ambient. The lamp contributing to room lighting.
-- **Background:** Real residential interior. Clean, minimal. Not staged lifestyle - real space.
-- **Used in:** Product page "In context" section
-
-### Product - Hourglass Hero
-- **Filename:** `hourglass-hero.jpg`
-- **Location:** `/public/images/products/hourglass/`
-- **Dimensions:** 1200x1600px minimum (3:4 aspect ratio)
-- **What to shoot:** Hourglass table lamp, switched off. Full product visible. The narrowing at the centre should be prominent.
-- **Lighting:** Soft natural light. Warm tone.
-- **Background:** Same quality as Ripple hero. Wooden surface, minimal styling.
-- **Used in:** Homepage featured products, Shop page grid, Product page gallery
-
-### Product - Hourglass Lit
-- **Filename:** `hourglass-lit.jpg`
-- **Location:** `/public/images/products/hourglass/`
-- **Dimensions:** 1200x1600px minimum (3:4 aspect ratio)
-- **What to shoot:** Hourglass switched ON in dim environment. Show how light divides at the waist - upper half diffusing upward, lower half pooling downward.
-- **Lighting:** Only the lamp. Dark room.
-- **Background:** Dark surface showing the light pool beneath.
-- **Used in:** Product page gallery, Homepage hover state
-
-### Product - Hourglass Detail
-- **Filename:** `hourglass-detail-waist.jpg`
-- **Location:** `/public/images/products/hourglass/`
-- **Dimensions:** 1200x1200px (1:1 square)
-- **What to shoot:** Close-up of the Hourglass at its narrowest point. Show the structural wall thickening and the geometry of the pinch.
-- **Lighting:** Raking side light.
-- **Used in:** Product page gallery
-
-### Product - CNC Wood Base Detail
-- **Filename:** `base-cnc-wood-detail.jpg`
-- **Location:** `/public/images/products/shared/`
-- **Dimensions:** 1200x1200px (1:1 square)
-- **What to shoot:** Close-up of the CNC-milled wooden base. Show the grain, the milling marks, the material quality. The junction between printed shade and wood base.
-- **Lighting:** Natural light. Warm.
-- **Used in:** Both product pages (gallery), could be shared
-
-### Installation - Salem Office Wide
-- **Filename:** `salem-wide.jpg`
-- **Location:** `/public/images/projects/salem/`
-- **Dimensions:** 2400x1030px minimum (21:9 ultrawide aspect ratio)
-- **What to shoot:** Full installation view of the 5 Ripple pendants in horizontal formation above the conference table. Shot from one end or side of the room.
-- **Lighting:** Pendants switched on. Room ambient visible. Warm.
-- **Background:** The actual Salem office space. Conference table, chairs, context.
-- **Used in:** Homepage installation highlight (hero), Project case study hero
-
-### Installation - Salem Office Detail
-- **Filename:** `salem-detail-single.jpg`
-- **Location:** `/public/images/projects/salem/`
-- **Dimensions:** 1200x1200px (1:1 square)
-- **What to shoot:** Close-up of a single Ripple pendant from the installation. Show the hardware, the suspension, the form in context.
-- **Used in:** Project case study gallery
-
-### Installation - Salem Office Context
-- **Filename:** `salem-context-meeting.jpg`
-- **Location:** `/public/images/projects/salem/`
-- **Dimensions:** 1600x1200px (4:3 aspect ratio)
-- **What to shoot:** The meeting room from the doorway/entry. Pendants visible overhead, room in use or set up for use. Show the spatial impact.
-- **Used in:** Project case study gallery
-
-### Process - Grasshopper Screenshot
-- **Filename:** `process-grasshopper.jpg`
-- **Location:** `/public/images/process/`
-- **Dimensions:** 1200x1200px (1:1 square)
-- **What to capture:** Screenshot of the Grasshopper definition for one of the lamp forms. Clean, showing the parametric logic. Crop to show the node graph clearly.
-- **Style:** Actual screenshot, not staged. The real tool.
-- **Used in:** Process page (Computation stage), About page (Curiosity chapter)
-
-### Process - Toolpath Visualisation
-- **Filename:** `process-toolpath.jpg`
-- **Location:** `/public/images/process/`
-- **Dimensions:** 1200x1200px (1:1 square)
-- **What to capture:** G-code visualisation showing the custom toolpath. Could be from a G-code viewer, Grasshopper preview, or the printer software. Show how the path varies.
-- **Used in:** Process page (Toolpath stage), About page (Going Deeper chapter)
-
-### Process - Printer Running
-- **Filename:** `process-printing.jpg`
-- **Location:** `/public/images/process/`
-- **Dimensions:** 1200x1200px (1:1 square)
-- **What to shoot:** The Bambu A1 mid-print. A lamp shade partially complete on the build plate. Show the layers being laid down.
-- **Lighting:** Workshop lighting. Honest, not glamorous.
-- **Used in:** Process page (Printing stage), Homepage process strip
-
-### Process - Hand Assembly
-- **Filename:** `process-assembly.jpg`
-- **Location:** `/public/images/process/`
-- **Dimensions:** 1200x1200px (1:1 square)
-- **What to shoot:** Hands wiring the lamp, fitting the base, or inspecting the finished piece. Show the human element.
-- **Lighting:** Workshop light. Warm.
-- **Used in:** Process page (Finishing stage)
-
-### Process - Final Light
-- **Filename:** `process-light-on.jpg`
-- **Location:** `/public/images/process/`
-- **Dimensions:** 1200x1200px (1:1 square)
-- **What to shoot:** A completed lamp switched on for the first time. The "payoff" moment. Warm glow, visible diffusion.
-- **Used in:** Process page (Light stage)
-
-### Compare - Vase Mode vs Waves
-- **Filename:** `compare-vasemode.jpg` and `compare-waves.jpg`
-- **Location:** `/public/images/process/`
-- **Dimensions:** 1600x900px each (16:9 aspect ratio)
-- **What to shoot:** Side-by-side comparison pair. Same angle, same lighting. One standard vase mode print, one Waves toolpath print. The difference in surface texture and wall variation should be obvious.
-- **Used in:** Process page (The Difference - compare slider)
+Tasks for Tharun to complete manually before domain cutover.
+Photography status updated based on live site review.
 
 ---
 
-## 3D Models Needed
+## Photography — What's Done ✓
 
-### Ripple 3D Model
-- **Filename:** `ripple.glb`
-- **Location:** `/public/models/`
-- **Format:** GLTF Binary (.glb), web-optimized
-- **Max size:** 5MB (ideally under 3MB)
-- **What:** The Ripple lamp shade and base as a complete model. Accurate geometry. Material should be semi-translucent white PLA for the shade, wood for the CNC base.
-- **Notes:** Export from Rhino/Grasshopper. Decimate if needed for web performance. Include both shade and base as separate meshes in the same file.
-- **Used in:** Product page 3D viewer (future - P2 in updates.md)
+Real Shopify images confirmed live on the staging site:
 
-### Hourglass 3D Model
-- **Filename:** `hourglass.glb`
-- **Location:** `/public/models/`
-- **Format:** GLTF Binary (.glb), web-optimized
-- **Max size:** 5MB
-- **What:** The Hourglass lamp shade and base. Same requirements as Ripple.
-- **Used in:** Product page 3D viewer (future - P2 in updates.md)
+- **Ripple — all four shades** (chalk, sand, amber, smoke) — lit product shots ✓
+- **Ripple — detail/zoomed shots** for each shade ✓  
+- **Ripple — base shot** (chalk with printed base, black cable) ✓
+- **Hourglass — dark/chalk variant** ✓
+
+This is enough to take the site live. Everything below improves it further.
 
 ---
 
-## Video Clips Needed
+## Photography — Still Needed
 
-### Printing Time-Lapse
-- **Filename:** `process-printing-timelapse.mp4`
-- **Location:** `/public/videos/`
-- **Duration:** 10-15 seconds, loopable
-- **Format:** MP4 H.264, 1080p, no audio
-- **What:** Time-lapse of a full lamp print from first layer to completion. Fixed camera angle, clean background.
-- **Used in:** Process page (could replace or supplement the printing stage image), potentially homepage hero background
+Priority order. Do these before or shortly after domain cutover.
 
-### Lamp Glow Loop
-- **Filename:** `lamp-glow-loop.mp4`
-- **Location:** `/public/videos/`
-- **Duration:** 5-8 seconds, seamlessly loopable
-- **Format:** MP4 H.264, 1080p, no audio
-- **What:** A completed lamp, lit, slowly rotating on a turntable. Or a fixed shot with very subtle ambient movement (curtain, shadow shift). The point is a living, breathing product shot.
-- **Used in:** Potential homepage hero background (future enhancement)
+### 1. Salem Office Installation (highest priority)
+
+The homepage installation section and the Studio case study both have placeholder grey boxes. This is the most visible gap on the site.
+
+| Shot | Filename | Dimensions | Notes |
+|---|---|---|---|
+| Full installation wide | `salem-wide.jpg` | 2400×1030px (21:9) | All 5 pendants, shot from the side or end of the table. Pendants on. |
+| Single pendant close | `salem-detail-single.jpg` | 1200×1200px (1:1) | One Ripple pendant from the installation, showing hardware and form in context. |
+| Room from doorway | `salem-context-meeting.jpg` | 1600×1200px (4:3) | The meeting room as seen from the entrance. Show spatial impact. |
+
+**Where to add once shot:**
+- `/public/images/projects/salem/`
+- Update `src/lib/projects.ts` — replace `heroImage: null` with `{ url: "/images/projects/salem/salem-wide.jpg", alt: "Salem office installation — 5 Ripple pendants" }`
+- Update `gallery: []` with the detail and context shots
+
+---
+
+### 2. Hourglass — additional shades
+
+Currently only the dark/chalk Hourglass variant is live. Sand, amber, and smoke variants needed to match Ripple coverage.
+
+| Shot | Filename | Location |
+|---|---|---|
+| Hourglass — Sand shade | `hourglass-sand.jpg` | `/public/images/products/hourglass/` or upload to Shopify |
+| Hourglass — Amber shade | `hourglass-amber.jpg` | same |
+| Hourglass — Smoke shade | `hourglass-smoke.jpg` | same |
+| Hourglass — detail/zoomed | `hourglass-detail-[shade].jpg` | same, for each shade |
+
+Upload to Shopify Admin → Products → The Hour Glass → Media. Tag alt text correctly:
+```
+The Hourglass lamp in Sand shade [sand]
+The Hourglass lamp in Amber shade [amber]
+```
+
+---
+
+### 3. Process photography
+
+For the Process page and the homepage "How it's made" strip. All four process strip sections currently show placeholder boxes.
+
+| Shot | Filename | Dimensions | Notes |
+|---|---|---|---|
+| Grasshopper definition | `process-grasshopper.jpg` | 1200×1200px | Screenshot of the actual node graph. Real tool, not staged. |
+| Toolpath visualisation | `process-toolpath.jpg` | 1200×1200px | G-code preview or Grasshopper toolpath preview showing path variation. |
+| Printer mid-print | `process-printing.jpg` | 1200×1200px | Bambu A1 with a lamp shade partially built on the bed. Honest, not glamorous. |
+| Hand assembly | `process-assembly.jpg` | 1200×1200px | Hands wiring, fitting base, or inspecting. Show the human element. |
+| Lamp first switch-on | `process-light-on.jpg` | 1200×1200px | Completed lamp lit for the first time. Warm glow, visible diffusion. |
+
+**Where to add:** `/public/images/process/`
+
+Then in `src/app/process/page.tsx` and `src/app/page.tsx` replace `<PlaceholderImage>` components with Next.js `<Image src="/images/process/[filename]" ... />`.
+
+---
+
+### 4. Context / lifestyle shots
+
+These are not blocking anything but will significantly improve conversion for D2C customers.
+
+| Shot | Notes |
+|---|---|
+| Ripple on a bedside table, switched on | Warm ambient room, lamp contributing to lighting |
+| Hourglass on a desk or shelf | Switched off, real space, minimal styling |
+| Both lamps together in a room | Shows scale relationship between the two products |
+
+---
+
+### 5. Compare pair — for Process page slider
+
+The CompareSlider component exists but has placeholder images. Two shots, same angle, same lighting:
+
+| Shot | Filename | Notes |
+|---|---|---|
+| Standard vase mode print | `compare-vasemode.jpg` | A generic 3D printed vase mode object — plain cylinder or similar |
+| Waves toolpath print | `compare-waves.jpg` | A Ripple or Hourglass at the same angle |
+
+Both: 1600×900px, 16:9.
 
 ---
 
 ## Shopify Admin Tasks
 
-### Add Product Metafield Definitions
-- **What:** Create custom metafield definitions for products so specs and design stories can be stored in Shopify and pulled dynamically.
-- **Where:** Shopify Admin > Settings > Custom data > Products
-- **Definitions to create:**
-  - `custom.print_time` (Single line text) - e.g., "19h 42m"
-  - `custom.layer_height` (Single line text) - e.g., "0.16mm"
-  - `custom.dimensions` (Single line text) - e.g., "H 280mm x W 175mm"
-  - `custom.weight` (Single line text) - e.g., "~460g"
-  - `custom.base_material` (Single line text) - e.g., "CNC-milled wood"
-  - `custom.iteration_count` (Single line text) - e.g., "11"
-  - `custom.design_story` (Multi-line text) - the product-specific design narrative
-- **Note:** Once these are created, the updates.md includes a script (P1) for Claude Code to push values programmatically. Alternatively, you can fill them in manually per product.
+### Fix product image alt texts (important — do before cutover)
 
-### Verify Product Pricing
-- **What:** Confirm that Shopify has the correct pricing: Rs 4,999 (standard base), Rs 5,999 (CNC wood base) for both Ripple and Hourglass.
-- **Where:** Shopify Admin > Products > [each product] > Variants
+Currently image alt texts contain only the raw filter tags, e.g. `[chalk]`. Screen readers read these out loud. Update every product image alt in Shopify Admin → Products → Media:
+
+Format: `[Descriptive name] [tags]`
+
+Examples:
+```
+Ripple lamp in Chalk shade [chalk]
+Ripple lamp in Smoke shade, zoomed detail [smoke]
+Ripple lamp in Sand shade, printed base, black cable [sand|printed|black]
+The Hourglass lamp in Chalk shade [chalk]
+```
+
+### Verify pricing
+
+Confirm both products show Rs 3,999 (standard) in Shopify Admin → Products → Variants. The live site is showing Rs 3,999, which differs from the Rs 4,999 in older brand docs — confirm which is correct.
 
 ---
 
-## Priority Order
+## Domain Cutover Checklist
 
-1. **Salem photography** - this is the most impactful single asset. It unlocks the homepage installation highlight and the first real case study.
-2. **Product hero shots** (Ripple + Hourglass) - replaces the biggest placeholders on the homepage and shop.
-3. **Product lit shots** - the "wow" images that sell.
-4. **Process photographs** - fills out the strongest content page.
-5. **Compare pair** - for the process page slider.
-6. **Context shots** - product in real rooms.
-7. **Detail shots** - surface texture, base, etc.
-8. **3D models** - for the Phase 2 product viewer.
-9. **Video** - nice to have, not blocking anything.
+When photography is done and the site has been reviewed on the staging URL:
+
+1. **Add domain in Vercel** — Project Settings → Domains → Add `waves.company`
+2. **Vercel will show DNS instructions** — either an A record or CNAME
+3. **Update DNS at your registrar** — wherever waves.company is registered, update the record Vercel specifies
+4. **Wait for propagation** — usually 10–30 minutes, up to 48 hours
+5. **Vercel handles SSL automatically** — HTTPS works immediately once DNS propagates
+6. **Test** — open waves.company in a fresh browser tab, confirm the site loads, Shopify cart works, contact form submits
+
+After cutover: submit `https://waves.company/sitemap.xml` to Google Search Console.
