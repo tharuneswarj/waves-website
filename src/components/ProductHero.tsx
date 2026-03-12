@@ -33,6 +33,8 @@ export default function ProductHero({
   usageCare,
 }: ProductHeroProps) {
   const [activeShade, setActiveShade] = useState<string | null>(null);
+  const [activeBase, setActiveBase] = useState<string | null>(null);
+  const [activeCable, setActiveCable] = useState<string | null>(null);
 
   return (
     <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2 lg:gap-14">
@@ -40,8 +42,9 @@ export default function ProductHero({
       <div className="min-w-0">
         <ProductGallery
           images={images}
+          variants={variants}
           productTitle={productTitle}
-          activeShade={activeShade}
+          selections={{ shade: activeShade, base: activeBase, cable: activeCable }}
         />
       </div>
 
@@ -55,6 +58,8 @@ export default function ProductHero({
           shadeColours={shadeColours}
           usageCare={usageCare}
           onShadeChange={setActiveShade}
+          onBaseChange={setActiveBase}
+          onCableChange={setActiveCable}
         />
       </div>
     </div>

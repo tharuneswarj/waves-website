@@ -52,6 +52,8 @@ export interface ShopifyProductVariant {
   availableForSale: boolean;
   price: ShopifyPrice;
   selectedOptions: { name: string; value: string }[];
+  /** Per-variant image used for gallery shade-switching (P0 #2) */
+  image: ShopifyImage | null;
 }
 
 export interface ShopifyMetafield {
@@ -171,6 +173,12 @@ const PRODUCT_FRAGMENT = /* GraphQL */ `
           selectedOptions {
             name
             value
+          }
+          image {
+            url
+            altText
+            width
+            height
           }
         }
       }

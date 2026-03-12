@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import type { ShopifyProductVariant, ShopifyPrice } from "@/lib/shopify";
 import ProductAccordion from "@/components/ProductAccordion";
+import { getOptionContent } from "@/lib/option-content";
 
 interface ProductFormProps {
   variants: ShopifyProductVariant[];
@@ -12,6 +13,8 @@ interface ProductFormProps {
   shadeColours: Record<string, string>;
   usageCare: string;
   onShadeChange?: (shade: string) => void;
+  onBaseChange?: (base: string) => void;
+  onCableChange?: (cable: string) => void;
 }
 
 function formatPrice(price: ShopifyPrice): string {
@@ -25,7 +28,7 @@ function formatPrice(price: ShopifyPrice): string {
 }
 
 // ── Known shade keywords for identification ─────────────
-const SHADE_KEYWORDS = ["chalk", "sand", "amber", "smoke", "white", "natural"];
+const SHADE_KEYWORDS = ["chalk", "sand", "amber", "smoke", "white", "natural", "beige"];
 
 // ── Get unique values for the option at a given index ──
 function getOptionValuesAtIndex(
@@ -100,6 +103,8 @@ export default function ProductForm({
   shadeColours,
   usageCare,
   onShadeChange,
+  onBaseChange,
+  onCableChange,
 }: ProductFormProps) {
   const { addItem, loading } = useCartStore();
 
@@ -160,11 +165,13 @@ export default function ProductForm({
 
   function pickBase(base: string) {
     setSelectedBase(base);
+    onBaseChange?.(base);
     setStep(2);
   }
 
   function pickCable(cable: string) {
     setSelectedCable(cable);
+    onCableChange?.(cable);
   }
 
   function goBack() {
@@ -296,22 +303,37 @@ export default function ProductForm({
               Select Base
             </legend>
             <div className="flex flex-col gap-3">
-              {baseOptions.map((base) => (
-                <button
-                  key={base}
-                  type="button"
-                  onClick={() => pickBase(base)}
-                  className={`flex items-start gap-4 rounded-xl border p-4 text-left transition-colors ${
-                    selectedBase === base
-                      ? "border-primary bg-primary/5"
-                      : "border-primary/15 hover:border-primary/40"
-                  }`}
-                >
-                  <p className="font-sans text-sm font-medium text-primary">
-                    {base}
-                  </p>
-                </button>
-              ))}
+              {baseOptions.map((base) => {
+                const { label, subtitle } = getOptionContent(base);
+                const isSelected = selectedBase === base;
+                return (
+                  <button
+                    key={base}
+                    type="button"
+                    onClick={() => pickBase(base)}
+                    className={`group flex items-start gap-4 rounded-xl border p-4 text-left transition-all duration-150 ${
+                      isSelected
+                        ? "border-primary bg-primary/5"
+                        : "border-primary/15 hover:border-primary/35 hover:bg-primary/[0.02]"
+                    }`}
+                  >
+                    {/* Left accent bar */}
+                    <span
+                      className={`mt-0.5 h-8 w-[3px] shrink-0 rounded-full transition-colors duration-150 ${
+                        isSelected ? "bg-primary" : "bg-primary/20 group-hover:bg-primary/40"
+                      }`}
+                    />
+                    <div className="flex flex-col">
+                      <p className="font-sans text-sm font-medium text-primary">{label}</p>
+                      {subtitle && (
+                        <p className="mt-0.5 font-mono text-[10px] tracking-wide text-primary/50">
+                          {subtitle}
+                        </p>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </fieldset>
         )}
@@ -323,22 +345,33 @@ export default function ProductForm({
               Select Cable
             </legend>
             <div className="flex gap-3">
-              {cableOptions.map((cable) => (
-                <button
-                  key={cable}
-                  type="button"
-                  onClick={() => pickCable(cable)}
-                  className={`flex-1 rounded-xl border py-4 px-5 text-center transition-colors ${
-                    selectedCable === cable
-                      ? "border-primary bg-primary text-surface"
-                      : "border-primary/15 text-primary hover:border-primary/40"
-                  }`}
-                >
-                  <span className="block font-sans text-sm font-medium">
-                    {cable}
-                  </span>
-                </button>
-              ))}
+              {cableOptions.map((cable) => {
+                const { label, subtitle } = getOptionContent(cable);
+                const isSelected = selectedCable === cable;
+                return (
+                  <button
+                    key={cable}
+                    type="button"
+                    onClick={() => pickCable(cable)}
+                    className={`flex flex-1 flex-col items-center justify-center gap-1 rounded-xl border py-4 px-5 text-center transition-all duration-150 ${
+                      isSelected
+                        ? "border-primary bg-primary text-surface"
+                        : "border-primary/15 text-primary hover:border-primary/40 hover:bg-primary/[0.02]"
+                    }`}
+                  >
+                    <span className="block font-sans text-sm font-medium">{label}</span>
+                    {subtitle && (
+                      <span
+                        className={`block font-mono text-[10px] tracking-wide transition-colors ${
+                          isSelected ? "text-surface/60" : "text-primary/45"
+                        }`}
+                      >
+                        {subtitle}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </fieldset>
         )}
