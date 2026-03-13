@@ -137,3 +137,69 @@ When `updates.md` includes a Shopify metafield script:
 - Require `SHOPIFY_ADMIN_TOKEN` from `.env.local`
 - Make scripts idempotent (safe to run multiple times)
 - Run the script and verify the data appears in Shopify Admin
+
+# CLAUDE.md Addendum - UI Elevation Branch
+
+*Add this section to the bottom of CLAUDE.md when working on the `ui-elevation` branch*
+
+---
+
+## UI Elevation: Frosted Glass System
+
+### Concept
+
+"Light through glass" - the website UI mirrors the product (light passing through translucent 3D printed shades). Selective glassmorphism applied to interactive elements. Not every element gets glass - only cards, buttons, nav, and overlays.
+
+### Version Corrections (update the Tech Stack section)
+
+- **Framework:** Next.js 16.1.6 (App Router, RSC + SSR)
+- **Styling:** Tailwind CSS v4 (`@theme inline` in globals.css, NOT tailwind.config)
+- **Animation:** Framer Motion v12.35.2 (use `motion.div`, NOT `motion.create()`)
+- **Smooth Scroll:** Lenis (NEW)
+- **Scroll Animations:** GSAP + ScrollTrigger (NEW)
+- **React:** 19.2.3
+
+### Glass Design Tokens (in globals.css)
+
+```css
+/* Cream sections */
+--glass-bg: rgba(253, 244, 227, 0.55);
+--glass-bg-heavy: rgba(253, 244, 227, 0.75);
+--glass-border: rgba(255, 255, 255, 0.3);
+
+/* Blue sections (hero, process, footer) */
+--glass-bg-dark: rgba(19, 70, 134, 0.4);
+--glass-bg-dark-heavy: rgba(19, 70, 134, 0.6);
+--glass-border-dark: rgba(253, 244, 227, 0.15);
+```
+
+### New Components (this branch)
+
+| Component | File | Purpose |
+|---|---|---|
+| GlassCard | `src/components/GlassCard.tsx` | Frosted card with spotlight + 3D tilt. `dark` prop for blue sections. |
+| GlassButton | `src/components/GlassButton.tsx` | Glass CTA. `dark` + `variant` props. |
+| AmbientBackground | `src/components/AmbientBackground.tsx` | Drifting gradient blobs behind glass. `dark` prop. Server component. |
+| SmoothScroll | `src/components/SmoothScroll.tsx` | Lenis wrapper in layout.tsx. Exposes `window.__lenis` for GSAP sync. |
+| HeroAnimated | `src/components/HeroAnimated.tsx` | Animated hero (blur-in text, glass CTAs). Client component. |
+| ProductCarousel | `src/components/ProductCarousel.tsx` | GSAP ScrollTrigger pinned horizontal scroll (desktop), CSS scroll-snap (mobile). |
+| ShadeSwatches | `src/components/ShadeSwatches.tsx` | 4 colour dots (Chalk/Sand/Amber/Smoke). |
+| ProcessStep | `src/components/ProcessStep.tsx` | Scroll-driven process step with warm glow on final step. |
+| CursorGlow | `src/components/CursorGlow.tsx` | Subtle cursor-following radial gradient. Desktop only. |
+
+### Critical Architecture Rule
+
+`src/app/page.tsx` is an **async server component**. All interactive/animated content must be in separate `"use client"` components imported into it. Never add `"use client"` to page.tsx itself.
+
+### Performance Rules
+
+- Max 5-7 `backdrop-filter` elements visible in any viewport
+- `will-change: transform` only during active animation
+- Respect `prefers-reduced-motion` everywhere
+- Lenis + GSAP: sync via `window.__lenis.on("scroll", ScrollTrigger.update)`
+- Lazy-load ProductCarousel with `next/dynamic` if bundle grows
+
+### Glass Where / Glass Not
+
+**Glass YES:** Product cards, CTA buttons, nav header (scrolled), mobile overlay, info panels
+**Glass NO:** Body text, footer, section backgrounds, headings, the hero background itself
