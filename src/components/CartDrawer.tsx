@@ -24,9 +24,13 @@ export default function CartDrawer() {
   const { accessToken } = useAuthStore();
 
   const handleCheckout = async () => {
-    if (!cart) return;
+    if (!cart?.checkoutUrl) return;
     if (cart.id && accessToken) {
-      await associateCustomerWithCart(cart.id, accessToken);
+      try {
+        await associateCustomerWithCart(cart.id, accessToken);
+      } catch {
+        // Non-fatal — proceed to checkout even if association fails
+      }
     }
     window.location.href = cart.checkoutUrl;
   };
