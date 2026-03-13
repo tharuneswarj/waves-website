@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useAuthStore } from "@/lib/auth-store";
 
 interface AuthModalProps {
@@ -15,15 +16,34 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  
+  const [mounted, setMounted] = useState(false);
+
   const { login, signup, loading, error, clearError } = useAuthStore();
 
-  if (!isOpen) return null;
+  // Portal requires the DOM to be available
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  // Lock body scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  if (!isOpen || !mounted) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
-    
+
     let success = false;
     if (mode === "login") {
       success = await login(email, password);
@@ -45,8 +65,11 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
     clearError();
   };
 
-  return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
+  const modal = (
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
       <div className="relative w-full max-w-md rounded-2xl bg-surface p-8 shadow-xl">
         <button
           onClick={onClose}
@@ -101,9 +124,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
           />
 
           {error && (
-            <div className="font-mono text-xs text-accent">
-              {error}
-            </div>
+            <div className="font-mono text-xs text-accent">{error}</div>
           )}
 
           <button
@@ -128,4 +149,6 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }

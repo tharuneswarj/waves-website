@@ -6,246 +6,238 @@
 
 ---
 
-## P0 — Do Now (SEO)
+## P0 — Fix Now (two bugs)
 
-### 1. sitemap.xml
+### 1. AuthModal positioning — modal not centred on non-homepage pages
 
-**New file: `src/app/sitemap.ts`**
+**Root cause:** `AuthModal` renders inside `<header>`, which is itself `position: fixed`. A `fixed` child of a `fixed` parent anchors to the parent's containing block on some browsers — not the full viewport. On the homepage this accidentally looks correct; on all other pages the modal floats toward the top of the screen.
 
-```typescript
-import { MetadataRoute } from "next";
-import { getAllProducts } from "@/lib/shopify";
-import { getAllProjectSlugs } from "@/lib/projects";
+**Fix:** Render AuthModal via a React portal directly into `document.body`, outside the header entirely.
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://waves.company";
-
-  const staticRoutes: MetadataRoute.Sitemap = [
-    { url: base,                  lastModified: new Date(), changeFrequency: "weekly",  priority: 1.0 },
-    { url: `${base}/shop`,        lastModified: new Date(), changeFrequency: "weekly",  priority: 0.9 },
-    { url: `${base}/studio`,      lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/process`,     lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/about`,       lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${base}/contact`,     lastModified: new Date(), changeFrequency: "yearly",  priority: 0.5 },
-  ];
-
-  let productRoutes: MetadataRoute.Sitemap = [];
-  try {
-    const products = await getAllProducts();
-    productRoutes = products.map((p) => ({
-      url: `${base}/shop/${p.handle}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.85,
-    }));
-  } catch {
-    // Shopify unreachable at build time — skip product routes
-  }
-
-  const projectRoutes: MetadataRoute.Sitemap = getAllProjectSlugs().map((slug) => ({
-    url: `${base}/studio/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.75,
-  }));
-
-  return [...staticRoutes, ...productRoutes, ...projectRoutes];
-}
-```
-
----
-
-### 2. robots.txt
-
-**New file: `src/app/robots.ts`**
-
-```typescript
-import { MetadataRoute } from "next";
-
-export default function robots(): MetadataRoute.Robots {
-  return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/api/", "/account/"],
-    },
-    sitemap: "https://waves.company/sitemap.xml",
-  };
-}
-```
-
----
-
-### 3. JSON-LD structured data — product pages
-
-Add inside `src/app/shop/[handle]/page.tsx`. This enables rich results in Google (price shown in search listings).
-
-Add this function before the default export:
-
-```typescript
-function buildProductJsonLd(product: ShopifyProduct, handle: string) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.title,
-    description: product.description,
-    url: `https://waves.company/shop/${handle}`,
-    brand: {
-      "@type": "Brand",
-      name: "Waves Company",
-    },
-    image: product.featuredImage?.url ? [product.featuredImage.url] : undefined,
-    offers: {
-      "@type": "AggregateOffer",
-      priceCurrency: product.priceRange.minVariantPrice.currencyCode,
-      lowPrice: product.priceRange.minVariantPrice.amount,
-      availability: "https://schema.org/InStock",
-      seller: {
-        "@type": "Organization",
-        name: "Waves Company",
-      },
-    },
-  };
-}
-```
-
-Then inside the `ProductPage` JSX, add as first child of `<main>`:
+**Update `src/components/AuthModal.tsx`** — replace the entire file:
 
 ```tsx
-<script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{ __html: JSON.stringify(buildProductJsonLd(product, handle)) }}
-/>
-```
+"use client";
 
-Also update `generateMetadata` to include the product image in OG (so social shares show the lamp, not the logo):
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { useAuthStore } from "@/lib/auth-store";
 
-```typescript
-return {
-  title: `${product.title} — Waves Company`,
-  description: product.description.slice(0, 160),
-  openGraph: {
-    title: `${product.title} — Waves Company`,
-    description: product.description.slice(0, 160),
-    images: product.featuredImage
-      ? [{ url: product.featuredImage.url, width: 1200, height: 1600, alt: product.featuredImage.altText || product.title }]
-      : undefined,
-  },
-};
-```
+interface AuthModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialMode?: "login" | "signup";
+}
 
----
+export default function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalProps) {
+  const [mode, setMode] = useState<"login" | "signup">(initialMode);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [mounted, setMounted] = useState(false);
 
-### 4. JSON-LD structured data — homepage (Organisation)
+  const { login, signup, loading, error, clearError } = useAuthStore();
 
-Add inside `src/app/page.tsx` as first child of `<main>`:
+  // Portal requires the DOM to be available
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
-```tsx
-<script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "Waves Company",
-      url: "https://waves.company",
-      logo: "https://waves.company/logos/Cream_and_Blue_Logo_v2.png",
-      description: "Algorithmically crafted lighting objects. Designed through computation, made by hand.",
-      contactPoint: {
-        "@type": "ContactPoint",
-        email: "hello@waves.company",
-        contactType: "customer service",
-      },
-      sameAs: ["https://instagram.com/waves_company_"],
-    }),
-  }}
-/>
-```
+  // Lock body scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
----
+  if (!isOpen || !mounted) return null;
 
-### 5. Fix OG image reference in layout.tsx
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    clearError();
 
-The current OG image path has a double underscore typo (`Cream_and_Blue__Logo.png`). Fix it:
+    let success = false;
+    if (mode === "login") {
+      success = await login(email, password);
+    } else {
+      success = await signup(email, password, firstName, lastName);
+    }
 
-In `src/app/layout.tsx`, update the images array:
+    if (success) {
+      onClose();
+      setEmail("");
+      setPassword("");
+      setFirstName("");
+      setLastName("");
+    }
+  };
 
-```typescript
-// Change:
-url: "/logos/Cream_and_Blue__Logo.png",
+  const toggleMode = () => {
+    setMode(mode === "login" ? "signup" : "login");
+    clearError();
+  };
 
-// To:
-url: "/logos/Cream_and_Blue_Logo_v2.png",
-width: 1200,
-height: 630,
-alt: "Waves Company",
-```
+  const modal = (
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="relative w-full max-w-md rounded-2xl bg-surface p-8 shadow-xl">
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 text-primary/40 transition-colors hover:text-primary/80"
+          aria-label="Close"
+        >
+          <span className="text-2xl leading-none">&times;</span>
+        </button>
 
----
+        <h2 className="mb-6 font-serif text-3xl text-primary">
+          {mode === "login" ? "Welcome back" : "Create account"}
+        </h2>
 
-### 6. Fix product image alt text — raw tag strings visible to screen readers
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {mode === "signup" && (
+            <div className="flex gap-4">
+              <input
+                type="text"
+                placeholder="First name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                className="w-full rounded-lg border border-primary/20 bg-transparent px-4 py-3 font-sans text-sm font-light text-primary placeholder:text-primary/40 focus:border-primary focus:outline-none"
+              />
+              <input
+                type="text"
+                placeholder="Last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                className="w-full rounded-lg border border-primary/20 bg-transparent px-4 py-3 font-sans text-sm font-light text-primary placeholder:text-primary/40 focus:border-primary focus:outline-none"
+              />
+            </div>
+          )}
 
-On the live site, gallery image alt attributes contain raw tag strings like `[chalk]` and `[chalk | printed | Black ]`. These come from Shopify alt text fields that have the filter tags but nothing else. Screen readers read these out loud. Fix in Shopify Admin for every product image — the alt text should be descriptive first, with tags at the end in brackets:
+          <input
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full rounded-lg border border-primary/20 bg-transparent px-4 py-3 font-sans text-sm font-light text-primary placeholder:text-primary/40 focus:border-primary focus:outline-none"
+          />
 
-```
-Ripple lamp in Chalk shade [chalk]
-Ripple lamp in Smoke shade [smoke]
-Ripple lamp in Sand shade, printed base, black cable [sand|printed|black]
-```
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full rounded-lg border border-primary/20 bg-transparent px-4 py-3 font-sans text-sm font-light text-primary placeholder:text-primary/40 focus:border-primary focus:outline-none"
+          />
 
-This is a Shopify Admin task, not a code task. But it's worth flagging as a fix — it affects accessibility and image SEO simultaneously.
+          {error && (
+            <div className="font-mono text-xs text-accent">{error}</div>
+          )}
 
----
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-full bg-accent px-8 py-3.5 font-sans text-sm font-medium tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-70"
+          >
+            {loading ? "Please wait..." : mode === "login" ? "Sign in" : "Sign up"}
+          </button>
+        </form>
 
-## P1 — Before domain cutover
-
-### 7. Checkout handoff — associate customer token with cart
-
-When a logged-in customer clicks checkout, Shopify doesn't know who they are. They have to re-enter details on the checkout page. Fix by calling `cartBuyerIdentityUpdate` before redirectring.
-
-**Update `src/lib/shopify.ts`** — add this function:
-
-```typescript
-export async function associateCustomerWithCart(
-  cartId: string,
-  customerAccessToken: string
-): Promise<void> {
-  await shopifyFetch(
-    `mutation cartBuyerIdentityUpdate($cartId: ID!, $buyerIdentity: CartBuyerIdentityInput!) {
-      cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
-        cart { id }
-        userErrors { field message }
-      }
-    }`,
-    { cartId, buyerIdentity: { customerAccessToken } }
+        <div className="mt-6 text-center">
+          <button
+            onClick={toggleMode}
+            className="font-sans text-sm font-medium text-primary/60 transition-colors hover:text-primary"
+          >
+            {mode === "login"
+              ? "Don't have an account? Sign up"
+              : "Already have an account? Sign in"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
+
+  return createPortal(modal, document.body);
 }
 ```
 
-**Update `src/components/CartDrawer.tsx`** — find the checkout button handler and update it:
+**Key changes from original:**
+- Added `import { createPortal } from "react-dom"`
+- Added `mounted` state guard (portals need the DOM available)
+- Added body scroll lock inside this component (removed from Header dependency)
+- Wrapped modal in `createPortal(modal, document.body)` — renders outside `<header>` entirely
+- `z-[200]` to ensure it sits above everything including the header (`z-50`) and cart drawer (`z-50`)
+- Clicking the backdrop (not the card) also closes the modal
 
+---
+
+### 2. Checkout not pre-populating — customer token not passed to Shopify
+
+**Root cause:** The `associateCustomerWithCart` function was added to `shopify.ts` but the CartDrawer checkout button is still a plain `<a href>` tag. It navigates immediately without calling the association function first.
+
+**Update `src/components/CartDrawer.tsx`** — three changes:
+
+**Change 1** — add imports at the top:
 ```typescript
-// Import at top:
 import { useAuthStore } from "@/lib/auth-store";
 import { associateCustomerWithCart } from "@/lib/shopify";
-
-// In component:
-const { accessToken } = useAuthStore();
-
-// Update the checkout click handler (wherever checkoutUrl navigation happens):
-const handleCheckout = async () => {
-  if (cart?.id && accessToken) {
-    await associateCustomerWithCart(cart.id, accessToken);
-  }
-  window.location.href = cart.checkoutUrl;
-};
 ```
 
-Replace the existing checkout `<a>` tag or button with a `<button onClick={handleCheckout}>`.
+**Change 2** — add `accessToken` from auth store inside the component, after the existing store destructuring:
+```typescript
+const { accessToken } = useAuthStore();
+```
+
+**Change 3** — replace the checkout `<a>` tag with a button:
+
+Find this:
+```tsx
+<a
+  href={cart?.checkoutUrl ?? "#"}
+  className="block w-full rounded-full bg-accent py-3.5 text-center font-sans text-sm font-medium tracking-wide text-white transition-colors hover:bg-accent-dark"
+>
+  Checkout
+</a>
+```
+
+Replace with:
+```tsx
+<button
+  type="button"
+  onClick={async () => {
+    if (!cart?.checkoutUrl) return;
+    if (cart.id && accessToken) {
+      try {
+        await associateCustomerWithCart(cart.id, accessToken);
+      } catch {
+        // Non-fatal — proceed to checkout even if association fails
+      }
+    }
+    window.location.href = cart.checkoutUrl;
+  }}
+  className="block w-full rounded-full bg-accent py-3.5 text-center font-sans text-sm font-medium tracking-wide text-white transition-colors hover:bg-accent-dark"
+>
+  Checkout
+</button>
+```
+
+**What this does:** If the customer is logged in, it silently calls `cartBuyerIdentityUpdate` on the Shopify cart before redirecting. Shopify then pre-fills name, email, and saved addresses on the checkout page. If the customer is not logged in (no `accessToken`), it skips the association and goes straight to checkout as before. The `try/catch` means a network failure on the association step never blocks the customer from checking out.
 
 ---
 
-### 8. favicon — update to Waves favicon
+### ALso-  favicon — update to Waves favicon
 
 Currently using Next.js default favicon. The `Favicon_Logo.png` already exists at `/public/logos/Favicon_Logo.png`.
 
@@ -260,37 +252,35 @@ export const metadata: Metadata = {
   },
 };
 ```
-
 ---
+
+
 
 ## Completed
 
+- [x] AuthModal portal fix — render via `createPortal` into `document.body` (13 March 2026)
+- [x] Checkout pre-populate — CartDrawer calls `associateCustomerWithCart` before redirect (13 March 2026)
 - [x] sitemap.ts — `src/app/sitemap.ts` (13 March 2026)
 - [x] robots.ts — `src/app/robots.ts` (13 March 2026)
 - [x] JSON-LD structured data — product pages (13 March 2026)
 - [x] JSON-LD structured data — homepage Organisation (13 March 2026)
 - [x] Fix OG image double-underscore typo in layout.tsx (13 March 2026)
-- [x] Fix product image alt text — Shopify Admin task (flagged, not a code change)
-- [x] Checkout handoff — associateCustomerWithCart + CartDrawer handler (13 March 2026)
+- [x] Checkout handoff — associateCustomerWithCart added to shopify.ts (13 March 2026)
 - [x] Favicon — added icons to layout.tsx metadata (13 March 2026)
 - [x] Headless customer accounts — Phase 1 (auth modal, Zustand store, protected routing)
 - [x] Headless customer accounts — Phase 2 (orders, order detail pages, address book, account details, password change)
-- [x] Progressive gallery filtering via alt text tags (`src/lib/image-filter.ts`)
-- [x] Redesigned Configurator UI — vertical accent bars, card-style buttons
-- [x] Smart Variant Subtitles (`src/lib/option-content.ts`)
-- [x] Improved gallery switching — matches variant image URLs
+- [x] Progressive gallery filtering via alt text tags
+- [x] Redesigned Configurator UI
+- [x] Smart Variant Subtitles
+- [x] Improved gallery switching
 - [x] Shopify Storefront API — single source of truth
 - [x] Native colour swatches from Shopify option metafields
-- [x] `descriptionHtml` rich text rendering
-- [x] 3-step configurator (Shade → Base → Cable) with step dots + back navigation
-- [x] Selection summary chips + "Made to order · Uniquely yours" tagline
-- [x] Mobile fixes — grid blowout, nav clipping, body scroll lock
+- [x] 3-step configurator with step dots + back navigation
+- [x] Selection summary chips + tagline
+- [x] Mobile fixes — grid, nav, scroll lock
 - [x] Typography fixes globally
 - [x] WaveMark on homepage hero
-- [x] Notion integration (contact + project brief forms)
-- [x] Transparent PNG logos across breakpoints
+- [x] Notion integration
 - [x] PageTransition wired into layout.tsx
 - [x] Per-page metadata and OpenGraph on all routes
-- [x] `generateMetadata` on dynamic product and project routes
-- [x] `metadataBase` set to https://waves.company
-- [x] Real product photography live in Shopify — Ripple (chalk, sand, amber, smoke) + Hourglass
+- [x] Real product photography live in Shopify
