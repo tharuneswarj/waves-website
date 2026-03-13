@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ScrollReveal from "@/components/ScrollReveal";
 import ChapterReveal from "@/components/ChapterReveal";
 import PlaceholderImage from "@/components/PlaceholderImage";
+import SketchMotif from "@/components/SketchMotif";
 
 export const metadata: Metadata = {
   title: "About - Waves Company",
@@ -79,7 +80,8 @@ const beliefs = [
 
 export default function AboutPage() {
   return (
-    <main className="pt-24">
+    <main className="relative pt-24">
+      <SketchMotif variant="tilde" className="absolute top-28 right-16 w-20 h-10" opacity={0.07} />
       {/* ─── Opening ─── */}
       <section className="px-6 pb-8 pt-12 lg:pb-12 lg:pt-16">
         <div className="mx-auto max-w-3xl text-center">

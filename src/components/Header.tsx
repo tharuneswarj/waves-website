@@ -7,13 +7,14 @@ import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/cart-store";
 import { useAuthStore } from "@/lib/auth-store";
 import AuthModal from "./AuthModal";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
+  { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
   { href: "/studio", label: "Studio" },
   { href: "/process", label: "Process" },
   { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
 ];
 
 export default function Header() {
@@ -24,147 +25,101 @@ export default function Header() {
   const { customer } = useAuthStore();
   const itemCount = cart?.totalQuantity ?? 0;
   const pathname = usePathname();
-  const isHome = pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    const onScroll = () => setScrolled(window.scrollY > 100);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Transparent header on homepage above the fold
-  const isTransparent = isHome && !scrolled && !mobileOpen;
-
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
+  const glassClasses = scrolled
+    ? "bg-[var(--glass-bg-heavy)] shadow-[0_4px_24px_rgba(19,70,134,0.06)]"
+    : "bg-[var(--glass-bg)]";
+
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        mobileOpen ? "bottom-0" : ""
-      } ${
-        isTransparent
-          ? "bg-transparent"
-          : "bg-surface/95 backdrop-blur-sm"
-      }`}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
-        {/* Logo */}
-        <Link href="/" className="relative z-50 shrink-0" aria-label="Waves Company home">
+    <>
+      {/* ── Brand logo: top-left, vertically aligned with pill nav ── */}
+      <Link
+        href="/"
+        className="fixed top-0 left-6 z-[51] pt-5 py-3 lg:left-10"
+        aria-label="Waves Company home"
+      >
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex items-center"
+        >
           <Image
-            src={isTransparent ? "/logos/Blue_and_Cream_Logo_v2.png" : "/logos/Cream_and_Blue_Logo_v2.png"}
+            src="/logos/Cream_and_Blue_Logo_v2.png"
             alt="Waves Company"
-            width={120}
-            height={48}
-            className="h-10 w-auto"
+            width={100}
+            height={40}
+            className="h-[15px] w-auto"
             priority
           />
-        </Link>
+        </motion.div>
+      </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-8 md:flex" aria-label="Main navigation">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`font-sans text-sm font-medium tracking-wide transition-colors hover:text-accent ${
-                isTransparent ? "text-surface" : "text-primary"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Right side: account + cart + mobile toggle */}
-        <div className="flex items-center gap-4">
-          {/* Account icon/link */}
-          {customer ? (
-            <Link
-              href="/account"
-              className={`relative z-50 flex items-center gap-1.5 p-2 transition-colors hover:text-accent ${
-                isTransparent ? "text-surface" : "text-primary"
-              }`}
-              aria-label="Account"
-            >
-              <span className="hidden font-sans text-xs font-medium uppercase tracking-wider md:block">
-                {customer.firstName.slice(0, 10)}
-              </span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+      {/* ── Floating pill nav ── */}
+      <header className="fixed top-0 left-0 right-0 z-50 flex justify-center px-6 pt-5 pointer-events-none">
+        <motion.nav
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className={`
+            pointer-events-auto flex items-center gap-6
+            rounded-full border border-[var(--glass-border)] px-8 py-3
+            backdrop-blur-[16px] transition-all duration-500
+            ${glassClasses}
+          `}
+        >
+          {/* Nav links - desktop */}
+          <div className="hidden items-center gap-6 md:flex">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`font-sans text-[11px] font-medium uppercase tracking-[0.15em] transition-colors hover:text-accent ${
+                  pathname === link.href ? "text-accent" : "text-primary"
+                }`}
               >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <div className="hidden h-4 w-px bg-primary/15 md:block" />
+
+          {/* Account */}
+          {customer ? (
+            <Link href="/account" className="text-primary transition-colors hover:text-accent" aria-label="Account">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
               </svg>
             </Link>
           ) : (
-            <button
-              onClick={() => setAuthModalOpen(true)}
-              className={`relative z-50 p-2 transition-colors hover:text-accent ${
-                isTransparent ? "text-surface" : "text-primary"
-              }`}
-              aria-label="Sign in"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
+            <button onClick={() => setAuthModalOpen(true)} className="text-primary transition-colors hover:text-accent" aria-label="Sign in">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
               </svg>
             </button>
           )}
 
-          {/* Cart icon */}
-          <button
-            type="button"
-            aria-label="Open cart"
-            className={`relative z-50 p-2 transition-colors hover:text-accent ${
-              isTransparent ? "text-surface" : "text-primary"
-            }`}
-            onClick={openCart}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" x2="21" y1="6" y2="6" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
+          {/* Cart */}
+          <button type="button" onClick={openCart} className="relative text-primary transition-colors hover:text-accent" aria-label="Open cart">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" x2="21" y1="6" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
             </svg>
             {itemCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[9px] font-medium text-white">
+              <span className="absolute -top-1.5 -right-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent text-[8px] font-medium text-white">
                 {itemCount}
               </span>
             )}
@@ -175,48 +130,42 @@ export default function Header() {
             type="button"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
-            className="relative z-50 flex flex-col justify-center gap-1.5 p-2 md:hidden"
+            className="flex flex-col justify-center gap-1 md:hidden"
             onClick={() => setMobileOpen((prev) => !prev)}
           >
-            <span
-              className={`block h-0.5 w-6 transition-all duration-300 ${
-                isTransparent ? "bg-surface" : "bg-primary"
-              } ${mobileOpen ? "translate-y-2 rotate-45" : ""}`}
-            />
-            <span
-              className={`block h-0.5 w-6 transition-all duration-300 ${
-                isTransparent ? "bg-surface" : "bg-primary"
-              } ${mobileOpen ? "opacity-0" : ""}`}
-            />
-            <span
-              className={`block h-0.5 w-6 transition-all duration-300 ${
-                isTransparent ? "bg-surface" : "bg-primary"
-              } ${mobileOpen ? "-translate-y-2 -rotate-45" : ""}`}
-            />
+            <span className={`block h-0.5 w-4 bg-primary transition-all duration-300 ${mobileOpen ? "translate-y-1.5 rotate-45" : ""}`} />
+            <span className={`block h-0.5 w-4 bg-primary transition-all duration-300 ${mobileOpen ? "opacity-0" : ""}`} />
+            <span className={`block h-0.5 w-4 bg-primary transition-all duration-300 ${mobileOpen ? "-translate-y-1.5 -rotate-45" : ""}`} />
           </button>
-        </div>
-      </div>
+        </motion.nav>
+      </header>
 
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-surface md:hidden">
-          <nav className="flex flex-col items-center gap-8" aria-label="Mobile navigation">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="font-sans text-2xl font-medium text-primary transition-colors hover:text-accent"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+      {/* ── Mobile overlay ── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-[var(--glass-bg-heavy)] backdrop-blur-[24px] md:hidden"
+          >
+            <nav className="flex flex-col items-center gap-8">
+              {[...navLinks, { href: "/contact", label: "Contact" }].map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="font-sans text-2xl font-medium text-primary transition-colors hover:text-accent"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Auth Modal */}
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
-    </header>
+    </>
   );
 }

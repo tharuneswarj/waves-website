@@ -1,9 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getAllProducts, type ShopifyProduct } from "@/lib/shopify";
 import ScrollReveal from "@/components/ScrollReveal";
 import PlaceholderImage from "@/components/PlaceholderImage";
-import WaveMark from "@/components/WaveMark";
+import HeroAnimated from "@/components/HeroAnimated";
+import AmbientBackground from "@/components/AmbientBackground";
+import ProductShowcase from "@/components/ProductShowcase";
 
 function formatMinPrice(product: ShopifyProduct): string {
   const amount = parseFloat(product.priceRange.minVariantPrice.amount);
@@ -15,6 +16,17 @@ function formatMinPrice(product: ShopifyProduct): string {
   }).format(amount);
 }
 
+function toShowcaseProduct(p: ShopifyProduct) {
+  return {
+    id: p.id,
+    title: p.title,
+    handle: p.handle,
+    priceFormatted: `From ${formatMinPrice(p)}`,
+    imageUrl: p.featuredImage?.url,
+    imageAlt: p.featuredImage?.altText || p.title,
+  };
+}
+
 export default async function Home() {
   let products: ShopifyProduct[] = [];
 
@@ -23,7 +35,6 @@ export default async function Home() {
   } catch {
     // Shopify not connected — render with static fallback
   }
-
 
   return (
     <main>
@@ -46,45 +57,17 @@ export default async function Home() {
           }),
         }}
       />
+
       {/* ─── Section 1: Hero ─── */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-primary px-6 text-center text-surface">
-        {/* Animated wave mark */}
-        <div className="mb-10">
-          <WaveMark />
-        </div>
-
-        <h1 className="mb-6 text-5xl leading-tight text-surface md:text-7xl lg:text-8xl">
-          Light, algorithmically crafted.
-        </h1>
-
-        <p className="mb-12 max-w-lg text-lg font-light leading-relaxed text-surface/80 md:text-xl">
-          Lighting objects designed through code, material honesty, and human
-          touch.
-        </p>
-
-        <div className="flex flex-col gap-4 sm:flex-row">
-          <Link
-            href="/shop"
-            className="rounded-full bg-accent px-10 py-3.5 font-sans text-sm font-medium tracking-wide text-white transition-colors hover:bg-accent-dark"
-          >
-            Explore the Collection
-          </Link>
-          <Link
-            href="/studio"
-            className="rounded-full border-2 border-surface/40 px-10 py-3.5 font-sans text-sm font-medium tracking-wide text-surface transition-colors hover:border-surface hover:bg-surface/10"
-          >
-            View Our Work
-          </Link>
-        </div>
-      </section>
+      <HeroAnimated />
 
       {/* ─── Section 2: Brand Statement ─── */}
-      <section className="bg-surface px-6 py-section lg:py-section-lg">
+      <section className="relative bg-surface px-6 py-section lg:py-section-lg overflow-hidden">
+        <AmbientBackground />
         <div className="mx-auto max-w-3xl text-center">
           <ScrollReveal>
-            <p className="font-sans text-xl font-light leading-relaxed text-primary/90 md:text-2xl md:leading-relaxed">
+            <p className="font-sans text-2xl font-light leading-relaxed text-primary/80 md:text-3xl lg:text-4xl lg:leading-relaxed">
               Objects deserve the same intellectual rigour as buildings.
-              <br className="hidden md:block" />
               Light is not decoration&thinsp;&mdash;&thinsp;it is atmosphere.
             </p>
           </ScrollReveal>
@@ -92,94 +75,22 @@ export default async function Home() {
       </section>
 
       {/* ─── Section 3: Featured Products ─── */}
-      <section className="bg-surface px-6 pb-section lg:pb-section-lg">
-        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2 lg:gap-12">
-          {products.length > 0 ? (
-            /* Shopify-connected: live product data */
-            products.slice(0, 2).map((product, i) => (
-              <ScrollReveal key={product.id} delay={i * 0.15}>
-                <Link href={`/shop/${product.handle}`} className="group block">
-                  <div className="overflow-hidden rounded-lg">
-                    {product.featuredImage ? (
-                      <div className="relative aspect-[3/4] bg-primary/5">
-                        <Image
-                          src={product.featuredImage.url}
-                          alt={product.featuredImage.altText || product.title}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                        />
-                      </div>
-                    ) : (
-                      <PlaceholderImage
-                        label={`${product.title} — product photography`}
-                        aspect="aspect-[3/4]"
-                        className="transition-transform duration-500 group-hover:scale-[1.03]"
-                      />
-                    )}
-                  </div>
-                  <div className="mt-5 flex items-baseline justify-between">
-                    <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
-                      {product.title}
-                    </h2>
-                    <span className="font-mono text-xs tracking-wide text-primary/75">
-                      From {formatMinPrice(product)}
-                    </span>
-                  </div>
-                </Link>
-              </ScrollReveal>
-            ))
-          ) : (
-            /* Fallback: static cards */
-            <>
-              <ScrollReveal>
-                <Link href="/shop/ripple" className="group block">
-                  <div className="overflow-hidden rounded-lg">
-                    <PlaceholderImage
-                      label="Ripple Table Lamp — product photography"
-                      aspect="aspect-[3/4]"
-                      className="transition-transform duration-500 group-hover:scale-[1.03]"
-                    />
-                  </div>
-                  <div className="mt-5 flex items-baseline justify-between">
-                    <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
-                      Ripple
-                    </h2>
-                    <span className="font-mono text-xs tracking-wide text-primary/75">
-                      From &#8377;4,999
-                    </span>
-                  </div>
-                </Link>
-              </ScrollReveal>
-              <ScrollReveal delay={0.15}>
-                <Link href="/shop/hourglass" className="group block">
-                  <div className="overflow-hidden rounded-lg">
-                    <PlaceholderImage
-                      label="Hourglass Table Lamp — product photography"
-                      aspect="aspect-[3/4]"
-                      className="transition-transform duration-500 group-hover:scale-[1.03]"
-                    />
-                  </div>
-                  <div className="mt-5 flex items-baseline justify-between">
-                    <h2 className="font-sans text-lg font-medium text-primary md:text-xl">
-                      Hourglass
-                    </h2>
-                    <span className="font-mono text-xs tracking-wide text-primary/75">
-                      From &#8377;4,999
-                    </span>
-                  </div>
-                </Link>
-              </ScrollReveal>
-            </>
-          )}
-        </div>
-      </section>
+      {products.length > 0 ? (
+        <ProductShowcase products={products.map(toShowcaseProduct)} />
+      ) : (
+        <ProductShowcase
+          products={[
+            { id: "1", title: "The Ripple", handle: "the-ripple-lamp", priceFormatted: "From \u20B93,999" },
+            { id: "2", title: "The Hourglass", handle: "the-hour-glass-lamp", priceFormatted: "From \u20B93,999" },
+          ]}
+        />
+      )}
 
       {/* ─── Section 4: Process Strip ─── */}
       <section className="bg-primary px-6 py-section lg:py-section-lg">
         <div className="mx-auto max-w-7xl">
           <ScrollReveal>
-            <h2 className="mb-12 text-center text-3xl text-surface md:text-4xl">
+            <h2 className="mb-12 text-left text-4xl text-surface md:text-6xl lg:text-7xl">
               How it&rsquo;s made
             </h2>
           </ScrollReveal>
@@ -194,7 +105,7 @@ export default async function Home() {
               {
                 step: "02",
                 title: "Print",
-                caption: "19h 42m print time",
+                caption: "4-5 hours per shade",
               },
               {
                 step: "03",
@@ -244,10 +155,10 @@ export default async function Home() {
       </section>
 
       {/* ─── Section 5: Installation Highlight ─── */}
-      <section className="relative bg-surface px-6 py-section lg:py-section-lg">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative bg-surface">
+        <div className="mx-auto">
           <ScrollReveal>
-            <div className="relative overflow-hidden rounded-lg">
+            <div className="relative overflow-hidden">
               <PlaceholderImage
                 label="Salem Office Installation — 5 Ripple pendants in horizontal formation (professional photography needed)"
                 aspect="aspect-[21/9]"
@@ -281,7 +192,7 @@ export default async function Home() {
       <section className="bg-surface px-6 py-section lg:py-section-lg">
         <div className="mx-auto max-w-3xl text-center">
           <ScrollReveal>
-            <p className="font-serif text-2xl leading-snug text-primary/80 md:text-3xl">
+            <p className="font-serif text-3xl leading-snug text-primary/80 md:text-5xl lg:text-6xl">
               Designed with computation.
               <br />
               Decided with judgment.

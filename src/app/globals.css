@@ -19,6 +19,35 @@
 }
 
 /* ──────────────────────────────────────
+   Glass System Tokens
+   ────────────────────────────────────── */
+
+:root {
+  /* Glass backgrounds - for cream surface sections */
+  --glass-bg: rgba(253, 244, 227, 0.55);
+  --glass-bg-heavy: rgba(253, 244, 227, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-border-light: rgba(255, 255, 255, 0.15);
+  --glass-shadow: 0 8px 32px rgba(19, 70, 134, 0.08);
+  --glass-shadow-hover: 0 12px 40px rgba(19, 70, 134, 0.12);
+  --glass-blur: 12px;
+  --glass-blur-heavy: 20px;
+
+  /* Glass backgrounds - for blue primary sections (hero, process, footer) */
+  --glass-bg-dark: rgba(19, 70, 134, 0.4);
+  --glass-bg-dark-heavy: rgba(19, 70, 134, 0.6);
+  --glass-border-dark: rgba(253, 244, 227, 0.15);
+
+  /* Ambient gradient colours (low opacity blobs behind glass) */
+  --ambient-blue: rgba(19, 70, 134, 0.08);
+  --ambient-coral: rgba(237, 63, 39, 0.06);
+  --ambient-yellow: rgba(254, 178, 26, 0.06);
+  /* Ambient for dark sections */
+  --ambient-cream: rgba(253, 244, 227, 0.06);
+  --ambient-coral-dark: rgba(237, 63, 39, 0.08);
+}
+
+/* ──────────────────────────────────────
    Tailwind v4 Theme
    ────────────────────────────────────── */
 
@@ -90,13 +119,46 @@ body {
   }
 }
 
-/* Ensure smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
 /* Selection colour */
 ::selection {
   background-color: var(--color-accent);
   color: var(--color-white);
 }
+
+/* ──────────────────────────────────────
+   Ambient Drift Animations
+   ────────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-ambient-drift-1 {
+    animation: ambient-drift-1 20s ease-in-out infinite;
+  }
+  .animate-ambient-drift-2 {
+    animation: ambient-drift-2 25s ease-in-out infinite;
+  }
+  .animate-ambient-drift-3 {
+    animation: ambient-drift-3 22s ease-in-out infinite;
+  }
+}
+
+@keyframes ambient-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-30px, 20px) scale(1.05); }
+  66% { transform: translate(20px, -15px) scale(0.95); }
+}
+
+@keyframes ambient-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(25px, -20px) scale(1.08); }
+  66% { transform: translate(-15px, 25px) scale(0.92); }
+}
+
+@keyframes ambient-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-20px, -25px) scale(1.03); }
+  66% { transform: translate(30px, 15px) scale(0.97); }
+}
+
+/* Scrollbar hide utility (for mobile carousel) */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

@@ -3,6 +3,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import ChapterReveal from "@/components/ChapterReveal";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import CompareSlider from "@/components/CompareSlider";
+import SketchMotif from "@/components/SketchMotif";
 
 export const metadata: Metadata = {
   title: "Process - Waves Company",
@@ -72,7 +73,9 @@ const stages = [
 
 export default function ProcessPage() {
   return (
-    <main className="pt-24">
+    <main className="relative pt-24">
+      <SketchMotif variant="ripple-outline" className="absolute top-24 right-16 w-24 h-32" opacity={0.06} />
+      <SketchMotif variant="pendant-outline" className="absolute bottom-32 left-12 w-16 h-24" opacity={0.05} />
       {/* ─── Section 1: Opening ─── */}
       <section className="px-6 pb-8 pt-12 lg:pb-12 lg:pt-16">
         <div className="mx-auto max-w-3xl text-center">

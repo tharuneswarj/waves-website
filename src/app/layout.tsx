@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import CartHydration from "@/components/CartHydration";
 import PageTransition from "@/components/PageTransition";
+import SmoothScroll from "@/components/SmoothScroll";
 import "./globals.css";
 
 const dmSerifDisplay = DM_Serif_Display({
@@ -71,7 +72,9 @@ export default function RootLayout({
       >
         <CartHydration />
         <Header />
-        <PageTransition>{children}</PageTransition>
+        <SmoothScroll>
+          <PageTransition>{children}</PageTransition>
+        </SmoothScroll>
         <Footer />
         <CartDrawer />
       </body>
