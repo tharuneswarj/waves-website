@@ -4,8 +4,8 @@ import { getShadeColours } from "@/lib/product-content";
 import ScrollReveal from "@/components/ScrollReveal";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import HeroAnimated from "@/components/HeroAnimated";
-import AmbientBackground from "@/components/AmbientBackground";
 import ProductShowcase from "@/components/ProductShowcase";
+import GlassButton from "@/components/GlassButton";
 
 function formatMinPrice(product: ShopifyProduct): string {
   const amount = parseFloat(product.priceRange.minVariantPrice.amount);
@@ -67,8 +67,7 @@ export default async function Home() {
       <HeroAnimated />
 
       {/* ─── Section 2: Brand Statement ─── */}
-      <section className="relative bg-surface px-6 py-section lg:py-section-lg overflow-hidden">
-        <AmbientBackground />
+      <section className="relative bg-surface px-6 py-section lg:py-section-lg">
         <div className="mx-auto max-w-3xl text-center">
           <ScrollReveal>
             <p className="font-sans text-2xl font-light leading-relaxed text-primary/80 md:text-3xl lg:text-4xl lg:leading-relaxed">
@@ -193,7 +192,15 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ─── Section 6: Closing Statement ─── */}
+      {/* ─── Section 6: Contact CTA ─── */}
+      <section className="bg-surface px-6 py-section lg:py-section-lg text-center">
+        <ScrollReveal>
+          <p className="font-sans text-sm font-light text-primary/50 mb-4">Have a project in mind?</p>
+          <GlassButton href="/contact" variant="secondary">Get in Touch</GlassButton>
+        </ScrollReveal>
+      </section>
+
+      {/* ─── Section 7: Closing Statement ─── */}
       <section className="bg-surface px-6 py-section lg:py-section-lg">
         <div className="mx-auto max-w-3xl text-center">
           <ScrollReveal>

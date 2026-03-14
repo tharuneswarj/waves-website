@@ -6,6 +6,7 @@ import CartDrawer from "@/components/CartDrawer";
 import CartHydration from "@/components/CartHydration";
 import PageTransition from "@/components/PageTransition";
 import SmoothScroll from "@/components/SmoothScroll";
+import CursorGlow from "@/components/CursorGlow";
 import "./globals.css";
 
 const dmSerifDisplay = DM_Serif_Display({
@@ -70,6 +71,7 @@ export default function RootLayout({
       <body
         className={`${dmSerifDisplay.variable} ${dmSans.variable} ${dmMono.variable} antialiased`}
       >
+        <CursorGlow />
         <CartHydration />
         <Header />
         <SmoothScroll>

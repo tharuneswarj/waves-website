@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -18,6 +18,11 @@ export default function HeroSketches() {
 
 function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
   const [imgFailed, setImgFailed] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
 
   // Extract the placeholder key from the src path (e.g., "/sketches/lamp-ripple.png" -> "lamp-ripple")
   const placeholderKey = sketch.src.replace("/sketches/", "").replace(".png", "");
@@ -25,16 +30,16 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
 
   const content = (
     <motion.div
-      className={`group absolute ${sketch.type === "product" ? "block" : "hidden md:block"}`}
+      className={`group absolute ${sketch.type === "product" ? "block max-md:!w-[70px] max-md:opacity-50" : "hidden md:block"}`}
       style={{
         ...sketch.position,
         width: sketch.width,
         zIndex: 1,
       }}
-      initial={{ opacity: 0, scale: 0.85, rotate: sketch.rotate - 3 }}
+      initial={reducedMotion ? false : { opacity: 0, scale: 0.85, rotate: sketch.rotate - 3 }}
       animate={{ opacity: 1, scale: 1, rotate: sketch.rotate }}
-      transition={{ duration: 0.6, ease: "easeOut", delay: sketch.delay }}
-      whileHover={{ scale: 1.1, rotate: sketch.rotate + 8, zIndex: 10 }}
+      transition={reducedMotion ? { duration: 0 } : { duration: 0.6, ease: "easeOut", delay: sketch.delay }}
+      whileHover={{ scale: 1.1, rotate: 0, zIndex: 10 }}
     >
       {/* The sketch image or SVG fallback */}
       {!imgFailed ? (

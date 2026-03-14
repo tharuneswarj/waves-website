@@ -101,6 +101,18 @@ export const heroSketches: SketchItem[] = [
     type: "project",
   },
 
+  // ── Decorative tilde (top-left accent) ──
+  {
+    id: "tilde-motif",
+    label: "~",
+    src: "/sketches/tilde-motif.png",
+    href: null,
+    position: { top: "18%", left: "10%" },
+    width: "70px",
+    rotate: -3,
+    delay: 1.2,
+    type: "decorative",
+  },
 ];
 
 /**

@@ -18,9 +18,10 @@ interface Product {
 }
 
 const cardTransforms = [
-  { rotate: -5, translateX: "5%", zIndex: 1 },
-  { rotate: 4, translateX: "-5%", zIndex: 2 },
-  // Add more entries if products grow
+  { rotate: -6, translateX: "5%", zIndex: 1 },
+  { rotate: -1, translateX: "-2%", zIndex: 2 },
+  { rotate: 4, translateX: "-5%", zIndex: 3 },
+  { rotate: 8, translateX: "-8%", zIndex: 4 },
 ];
 
 export default function ProductShowcase({ products }: { products: Product[] }) {

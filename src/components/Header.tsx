@@ -63,7 +63,7 @@ export default function Header() {
               alt="Waves"
               width={32}
               height={32}
-              className="h-[15px] w-auto"
+              className="h-[18px] w-auto"
               priority
             />
           </Link>
