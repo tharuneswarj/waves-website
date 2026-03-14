@@ -33,7 +33,7 @@ export default function GlassButton({
   } else {
     variantClasses =
       variant === "primary"
-        ? "bg-primary/85 text-surface border-white/15 hover:bg-primary/95 hover:shadow-[0_0_30px_rgba(19,70,134,0.25)]"
+        ? "bg-accent/90 text-white border-white/20 hover:bg-accent hover:shadow-[0_0_30px_rgba(237,63,39,0.25)]"
         : "bg-[var(--glass-bg)] text-primary border-[var(--glass-border)] hover:bg-[var(--glass-bg-heavy)]";
   }
 

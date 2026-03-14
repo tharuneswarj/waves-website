@@ -10,7 +10,6 @@ import AuthModal from "./AuthModal";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
   { href: "/studio", label: "Studio" },
   { href: "/process", label: "Process" },
@@ -44,29 +43,6 @@ export default function Header() {
 
   return (
     <>
-      {/* ── Brand logo: top-left, vertically aligned with pill nav ── */}
-      <Link
-        href="/"
-        className="fixed top-0 left-6 z-[51] pt-5 py-3 lg:left-10"
-        aria-label="Waves Company home"
-      >
-        <motion.div
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex items-center"
-        >
-          <Image
-            src="/logos/Cream_and_Blue_Logo_v2.png"
-            alt="Waves Company"
-            width={100}
-            height={40}
-            className="h-[15px] w-auto"
-            priority
-          />
-        </motion.div>
-      </Link>
-
       {/* ── Floating pill nav ── */}
       <header className="fixed top-0 left-0 right-0 z-50 flex justify-center px-6 pt-5 pointer-events-none">
         <motion.nav
@@ -80,6 +56,21 @@ export default function Header() {
             ${glassClasses}
           `}
         >
+          {/* Logo mark — replaces Home link, same height as icons */}
+          <Link href="/" aria-label="Waves Company home" className="flex items-center shrink-0">
+            <Image
+              src="/logos/Transparent_Blue_Logo_Navbar.png"
+              alt="Waves"
+              width={32}
+              height={32}
+              className="h-[15px] w-auto"
+              priority
+            />
+          </Link>
+
+          {/* Divider after logo */}
+          <div className="h-4 w-px bg-primary/15" />
+
           {/* Nav links - desktop */}
           <div className="hidden items-center gap-6 md:flex">
             {navLinks.map((link) => (

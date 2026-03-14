@@ -1,14 +1,26 @@
-const SHADES = [
+interface Shade {
+  name: string;
+  color: string;
+}
+
+const DEFAULT_SHADES: Shade[] = [
   { name: "Chalk", color: "#F5F0E8" },
   { name: "Sand", color: "#D4C5A9" },
   { name: "Amber", color: "#C8956A" },
   { name: "Smoke", color: "#7A7A7A" },
 ];
 
-export default function ShadeSwatches({ className = "" }: { className?: string }) {
+interface ShadeSwatchesProps {
+  className?: string;
+  shades?: Shade[];
+}
+
+export default function ShadeSwatches({ className = "", shades }: ShadeSwatchesProps) {
+  const items = shades && shades.length > 0 ? shades : DEFAULT_SHADES;
+
   return (
     <div className={`flex gap-2 ${className}`}>
-      {SHADES.map((shade) => (
+      {items.map((shade) => (
         <div
           key={shade.name}
           title={shade.name}

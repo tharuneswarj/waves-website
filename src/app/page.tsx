@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllProducts, type ShopifyProduct } from "@/lib/shopify";
+import { getShadeColours } from "@/lib/product-content";
 import ScrollReveal from "@/components/ScrollReveal";
 import PlaceholderImage from "@/components/PlaceholderImage";
 import HeroAnimated from "@/components/HeroAnimated";
@@ -17,6 +18,9 @@ function formatMinPrice(product: ShopifyProduct): string {
 }
 
 function toShowcaseProduct(p: ShopifyProduct) {
+  const colourMap = getShadeColours(p);
+  const shades = Object.entries(colourMap).map(([name, color]) => ({ name, color }));
+
   return {
     id: p.id,
     title: p.title,
@@ -24,6 +28,7 @@ function toShowcaseProduct(p: ShopifyProduct) {
     priceFormatted: `From ${formatMinPrice(p)}`,
     imageUrl: p.featuredImage?.url,
     imageAlt: p.featuredImage?.altText || p.title,
+    shades: shades.length > 0 ? shades : undefined,
   };
 }
 

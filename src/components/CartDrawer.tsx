@@ -56,7 +56,7 @@ export default function CartDrawer() {
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 z-50 bg-black/40"
+            className="fixed inset-0 z-50 bg-primary/15 backdrop-blur-[4px]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -65,7 +65,7 @@ export default function CartDrawer() {
 
           {/* Drawer */}
           <motion.aside
-            className="fixed top-0 right-0 bottom-0 z-50 flex w-full max-w-md flex-col bg-surface shadow-2xl"
+            className="fixed top-0 right-0 bottom-0 z-50 flex w-full max-w-md flex-col bg-[var(--glass-bg-heavy)] backdrop-blur-[20px] border-l border-[var(--glass-border)] shadow-2xl"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}

@@ -25,7 +25,7 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
 
   const content = (
     <motion.div
-      className="group absolute hidden md:block"
+      className={`group absolute ${sketch.type === "product" ? "block" : "hidden md:block"}`}
       style={{
         ...sketch.position,
         width: sketch.width,
@@ -34,7 +34,7 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
       initial={{ opacity: 0, scale: 0.85, rotate: sketch.rotate - 3 }}
       animate={{ opacity: 1, scale: 1, rotate: sketch.rotate }}
       transition={{ duration: 0.6, ease: "easeOut", delay: sketch.delay }}
-      whileHover={{ scale: 1.12, zIndex: 10 }}
+      whileHover={{ scale: 1.1, rotate: sketch.rotate + 8, zIndex: 10 }}
     >
       {/* The sketch image or SVG fallback */}
       {!imgFailed ? (

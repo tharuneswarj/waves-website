@@ -14,6 +14,7 @@ interface Product {
   priceFormatted: string;
   imageUrl?: string;
   imageAlt?: string;
+  shades?: { name: string; color: string }[];
 }
 
 const cardTransforms = [
@@ -88,7 +89,7 @@ export default function ProductShowcase({ products }: { products: Product[] }) {
                       <h3 className="font-sans text-base font-medium text-primary">{product.title}</h3>
                       <span className="font-mono text-xs tracking-wide text-primary/70">{product.priceFormatted}</span>
                     </div>
-                    <ShadeSwatches className="mt-3" />
+                    <ShadeSwatches className="mt-3" shades={product.shades} />
                   </GlassCard>
                 </Link>
               </motion.div>
@@ -127,7 +128,7 @@ export default function ProductShowcase({ products }: { products: Product[] }) {
                     <h3 className="font-sans text-base font-medium text-primary">{product.title}</h3>
                     <span className="font-mono text-xs tracking-wide text-primary/70">{product.priceFormatted}</span>
                   </div>
-                  <ShadeSwatches className="mt-3" />
+                  <ShadeSwatches className="mt-3" shades={product.shades} />
                 </GlassCard>
               </Link>
             </motion.div>

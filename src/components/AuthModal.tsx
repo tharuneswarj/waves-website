@@ -67,10 +67,10 @@ export default function AuthModal({ isOpen, onClose, initialMode = "login" }: Au
 
   const modal = (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-primary/20 p-4 backdrop-blur-[8px]"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="relative w-full max-w-md rounded-2xl bg-surface p-8 shadow-xl">
+      <div className="relative w-full max-w-md rounded-2xl bg-[var(--glass-bg-heavy)] p-8 shadow-xl backdrop-blur-[16px] border border-[var(--glass-border)]">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-primary/40 transition-colors hover:text-primary/80"
