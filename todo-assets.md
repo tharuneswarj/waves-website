@@ -103,6 +103,24 @@ Both: 1600×900px, 16:9.
 
 ---
 
+### 6. Hero sketch PNGs (line drawings)
+
+Coral (#ED3F27) line drawings on transparent PNG background. Architectural line-drawing style, 2-3px stroke, no fills. Place in `/public/sketches/`.
+
+| Filename | Subject | Canvas Size | Notes |
+|---|---|---|---|
+| `lamp-ripple.png` | Ripple table lamp | 400x500px | Full lamp + base |
+| `lamp-hourglass.png` | Hourglass table lamp | 400x500px | Full lamp + base |
+| `pendant-chennai.png` | Chennai small pendant | 300x450px | Include ~80px cord at top |
+| `pendant-linear.png` | Linear pendant | 600x300px | Wide, two cords |
+| `lamp-floor.png` | Floor lamp | 250x700px | Full height |
+| `tilde-motif.png` | Tilde wave decoration | 200x100px | Decorative only |
+
+Used by: `src/lib/sketch-map.ts` -> `src/components/HeroSketches.tsx`
+Fallback: SVG placeholders render until real PNGs are uploaded.
+
+---
+
 ## Shopify Admin Tasks
 
 ### Fix product image alt texts (important — do before cutover)
