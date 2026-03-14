@@ -21,7 +21,7 @@ export default function GlassButton({
   className = "",
 }: GlassButtonProps) {
   const baseClasses =
-    "inline-flex items-center justify-center px-10 py-3.5 rounded-full font-sans text-sm font-medium tracking-wide transition-all duration-300 backdrop-blur-[12px] border";
+    "inline-flex items-center justify-center px-6 py-2.5 md:px-10 md:py-3.5 rounded-full font-sans text-xs md:text-sm font-medium tracking-wide transition-all duration-300 backdrop-blur-[12px] border";
 
   let variantClasses: string;
 

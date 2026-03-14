@@ -23,7 +23,7 @@ export default function HeroAnimated() {
 
       {/* Headline - bottom left, oversized */}
       <motion.h1
-        className="relative z-10 max-w-[75%] text-5xl leading-[0.95] text-primary sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
+        className="relative z-10 max-w-[85%] md:max-w-[75%] text-3xl leading-[0.95] text-primary sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl"
         initial={{ opacity: 0, filter: "blur(6px)" }}
         animate={{ opacity: 1, filter: "blur(0px)" }}
         transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}

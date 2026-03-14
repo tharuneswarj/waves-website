@@ -28,7 +28,28 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
   const placeholderKey = sketch.src.replace("/sketches/", "").replace(".png", "");
   const placeholderSvg = sketchPlaceholders[placeholderKey];
 
-  const content = (
+  const imageContent = (
+    <>
+      {!imgFailed ? (
+        <Image
+          src={sketch.src}
+          alt={sketch.label}
+          width={200}
+          height={280}
+          className="h-auto w-full object-contain"
+          onError={() => setImgFailed(true)}
+          unoptimized
+        />
+      ) : placeholderSvg ? (
+        <div
+          className="h-auto w-full"
+          dangerouslySetInnerHTML={{ __html: placeholderSvg }}
+        />
+      ) : null}
+    </>
+  );
+
+  return (
     <motion.div
       className={`group absolute ${sketch.type === "product" ? "block max-md:!w-[70px] max-md:opacity-50" : "hidden md:block"}`}
       style={{
@@ -46,23 +67,14 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
         transition: { type: "spring", stiffness: 400, damping: 15, duration: 0.2 }
       }}
     >
-      {/* The sketch image or SVG fallback */}
-      {!imgFailed ? (
-        <Image
-          src={sketch.src}
-          alt={sketch.label}
-          width={200}
-          height={280}
-          className="h-auto w-full object-contain"
-          onError={() => setImgFailed(true)}
-          unoptimized // PNGs are small, no need for Shopify CDN optimisation
-        />
-      ) : placeholderSvg ? (
-        <div
-          className="h-auto w-full"
-          dangerouslySetInnerHTML={{ __html: placeholderSvg }}
-        />
-      ) : null}
+      {/* Image or SVG fallback - wrapped in Link if clickable */}
+      {sketch.href ? (
+        <Link href={sketch.href} className="block">
+          {imageContent}
+        </Link>
+      ) : (
+        imageContent
+      )}
 
       {/* Hover tooltip */}
       {sketch.type !== "decorative" && (
@@ -72,15 +84,4 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
       )}
     </motion.div>
   );
-
-  // Wrap in Link if href exists, otherwise just render
-  if (sketch.href) {
-    return (
-      <Link href={sketch.href} className="contents">
-        {content}
-      </Link>
-    );
-  }
-
-  return content;
 }

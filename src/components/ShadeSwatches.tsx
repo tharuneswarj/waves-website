@@ -3,24 +3,18 @@ interface Shade {
   color: string;
 }
 
-const DEFAULT_SHADES: Shade[] = [
-  { name: "Chalk", color: "#F5F0E8" },
-  { name: "Sand", color: "#D4C5A9" },
-  { name: "Amber", color: "#C8956A" },
-  { name: "Smoke", color: "#7A7A7A" },
-];
-
 interface ShadeSwatchesProps {
   className?: string;
   shades?: Shade[];
 }
 
 export default function ShadeSwatches({ className = "", shades }: ShadeSwatchesProps) {
-  const items = shades && shades.length > 0 ? shades : DEFAULT_SHADES;
+  // Only render swatches if the product actually has shade data
+  if (!shades || shades.length === 0) return null;
 
   return (
     <div className={`flex gap-2 ${className}`}>
-      {items.map((shade) => (
+      {shades.map((shade) => (
         <div
           key={shade.name}
           title={shade.name}

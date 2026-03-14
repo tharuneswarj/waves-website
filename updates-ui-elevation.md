@@ -1,6 +1,6 @@
-# Waves Website - UI Elevation: Cleanup & Polish
+# Waves Website - Updates
 
-*Generated: 15 March 2026 from Claude.ai conversation*
+*Generated: 14 March 2026 from Claude.ai conversation*
 *Status: COMPLETE*
 *Branch: `ui-elevation`*
 
@@ -10,211 +10,200 @@
 
 ---
 
-## Fix 1: Remove tilde sketch from hero
+## P0 — Do Now
 
-**File:** `src/lib/sketch-map.ts`
-**What:** Remove the tilde-motif entry from the `heroSketches` array and its SVG placeholder.
-
-**Delete this entire entry from heroSketches array (the last item):**
-```typescript
-  {
-    id: "tilde-motif",
-    label: "~",
-    src: "/sketches/tilde-motif.png",
-    href: null,
-    position: { top: "18%", left: "10%" },
-    width: "70px",
-    rotate: -3,
-    delay: 1.2,
-    type: "decorative",
-  },
-```
-
-**Also delete the tilde-motif entry from the `sketchPlaceholders` object:**
-```typescript
-  "tilde-motif": `<svg viewBox="0 0 70 35" fill="none" stroke="#ED3F27" stroke-width="2" stroke-linecap="round"><path d="M5 20 Q18 5, 35 18 Q52 31, 65 15"/></svg>`,
-```
-
----
-
-## Fix 2: Make sketch hover rotation instant and snappy
+### Fix 1: Hourglass sketch hover not activating
 
 **File:** `src/components/HeroSketches.tsx`
+**What:** The Hourglass sketch does not respond to hover (no scale, no rotation, no tooltip). Root cause: wrapping the entire `motion.div` inside `<Link className="contents">` breaks Framer Motion's `whileHover` detection in some browsers. Fix by moving the Link inside the motion.div so the motion element is always the outermost positioned element.
 
-**Find (around line 41):**
-```tsx
-      whileHover={{ scale: 1.1, rotate: 0, zIndex: 10 }}
-```
+**Replace the entire `SketchElement` function (lines 19-86) with:**
 
-**Replace with:**
 ```tsx
+function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+
+  // Extract the placeholder key from the src path (e.g., "/sketches/lamp-ripple.png" -> "lamp-ripple")
+  const placeholderKey = sketch.src.replace("/sketches/", "").replace(".png", "");
+  const placeholderSvg = sketchPlaceholders[placeholderKey];
+
+  const imageContent = (
+    <>
+      {!imgFailed ? (
+        <Image
+          src={sketch.src}
+          alt={sketch.label}
+          width={200}
+          height={280}
+          className="h-auto w-full object-contain"
+          onError={() => setImgFailed(true)}
+          unoptimized
+        />
+      ) : placeholderSvg ? (
+        <div
+          className="h-auto w-full"
+          dangerouslySetInnerHTML={{ __html: placeholderSvg }}
+        />
+      ) : null}
+    </>
+  );
+
+  return (
+    <motion.div
+      className={`group absolute ${sketch.type === "product" ? "block max-md:!w-[70px] max-md:opacity-50" : "hidden md:block"}`}
+      style={{
+        ...sketch.position,
+        width: sketch.width,
+        zIndex: 1,
+      }}
+      initial={reducedMotion ? false : { opacity: 0, scale: 0.85, rotate: sketch.rotate - 3 }}
+      animate={{ opacity: 1, scale: 1, rotate: sketch.rotate }}
+      transition={reducedMotion ? { duration: 0 } : { duration: 0.6, ease: "easeOut", delay: sketch.delay }}
       whileHover={{
         scale: 1.1,
         rotate: 0,
         zIndex: 10,
         transition: { type: "spring", stiffness: 400, damping: 15, duration: 0.2 }
       }}
+    >
+      {/* Image or SVG fallback - wrapped in Link if clickable */}
+      {sketch.href ? (
+        <Link href={sketch.href} className="block">
+          {imageContent}
+        </Link>
+      ) : (
+        imageContent
+      )}
+
+      {/* Hover tooltip */}
+      {sketch.type !== "decorative" && (
+        <span className="pointer-events-none absolute -top-6 left-1/2 -translate-x-1/2 rounded bg-[var(--glass-bg)] px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-primary opacity-0 backdrop-blur-[8px] border border-[var(--glass-border)] transition-all duration-200 group-hover:opacity-100 group-hover:-translate-y-1 whitespace-nowrap">
+          {sketch.label}
+        </span>
+      )}
+    </motion.div>
+  );
+}
 ```
+
+**Key change:** The `motion.div` is now always the outermost element (never wrapped in a Link). The Link sits inside, wrapping only the image content. This ensures `whileHover` fires correctly on every sketch.
 
 ---
 
-## Fix 3: Push sketches below the navbar
+### Fix 2: Move Ripple + Hourglass sketches for mobile fit
 
 **File:** `src/lib/sketch-map.ts`
-**What:** Pendant sketches overlap the nav pill area. Add clearance.
+**What:** On mobile, the Ripple and Hourglass sketches collide with the "Light, algorithmically crafted." headline. Move both further right and lower.
 
-- Chennai pendant: change `top: "3%"` to `top: "10%"`
-- Linear pendant: change `top: "2%"` to `top: "8%"`
-- Others already positioned well below nav.
-
----
-
-## Fix 4: Footer links - all turn coral on hover
-
-**File:** `src/components/Footer.tsx`
-**What:** Replace every `hover:text-surface` with `hover:text-accent`.
-
-There are 3 places in Footer.tsx:
-1. Nav links (line ~35): `hover:text-surface` -> `hover:text-accent`
-2. Email link (line ~42): `hover:text-surface` -> `hover:text-accent`
-3. Instagram link (line ~43): `hover:text-surface` -> `hover:text-accent`
-
-For the legal links at the bottom: change `hover:text-surface/60` to `hover:text-accent/80`
-
-**File:** `src/app/page.tsx`
-Also fix the two homepage links in the blue process section:
-- "See the full process" link: `hover:text-surface` -> `hover:text-accent`
-- "See the full project" link: `hover:text-surface` -> `hover:text-accent`
-
----
-
-## Fix 5: Remove "Have a project in mind? Get in Touch" section
-
-**File:** `src/app/page.tsx`
-**Delete the entire Contact CTA section block:**
-```tsx
-      {/* ─── Section 6: Contact CTA ─── */}
-      <section className="bg-surface px-6 py-section lg:py-section-lg text-center">
-        <ScrollReveal>
-          <p className="font-sans text-sm font-light text-primary/50 mb-4">Have a project in mind?</p>
-          <GlassButton href="/contact" variant="secondary">Get in Touch</GlassButton>
-        </ScrollReveal>
-      </section>
+**Ripple sketch - find:**
+```typescript
+    position: { top: "35%", right: "15%" },
+```
+**Replace with:**
+```typescript
+    position: { top: "40%", right: "5%" },
 ```
 
-Also remove the `GlassButton` import from the top of page.tsx if it's no longer used anywhere else in this file.
-
-Renumber the closing statement section comment from "Section 7" to "Section 6".
+**Hourglass sketch - find:**
+```typescript
+    position: { top: "30%", right: "32%" },
+```
+**Replace with:**
+```typescript
+    position: { top: "36%", right: "18%" },
+```
 
 ---
 
-## Fix 6: "View Our Work" button - visible border
+### Fix 3: Hero headline and CTA buttons too large on mobile
+
+**File:** `src/components/HeroAnimated.tsx`
+
+**3a. Headline - reduce mobile size**
+
+**Find:**
+```tsx
+        className="relative z-10 max-w-[75%] text-5xl leading-[0.95] text-primary sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
+```
+
+**Replace with:**
+```tsx
+        className="relative z-10 max-w-[85%] md:max-w-[75%] text-3xl leading-[0.95] text-primary sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl"
+```
+
+This drops the mobile headline from `text-5xl` (48px) to `text-3xl` (30px), which keeps "algorithmically" from overwhelming the screen. Also widens `max-w` on mobile so the word doesn't wrap awkwardly.
+
+**3b. CTA buttons - reduce mobile padding**
 
 **File:** `src/components/GlassButton.tsx`
-**What:** Secondary variant on cream bg is invisible. Give it a clear blue outline.
 
-**Find the non-dark secondary variant (around line 35-36):**
+**Find:**
 ```tsx
-        : "bg-[var(--glass-bg)] text-primary border-[var(--glass-border)] hover:bg-[var(--glass-bg-heavy)]";
+    "inline-flex items-center justify-center px-10 py-3.5 rounded-full font-sans text-sm font-medium tracking-wide transition-all duration-300 backdrop-blur-[12px] border";
 ```
 
 **Replace with:**
 ```tsx
-        : "bg-transparent text-primary border-primary/30 hover:border-primary/60 hover:bg-primary/5";
+    "inline-flex items-center justify-center px-6 py-2.5 md:px-10 md:py-3.5 rounded-full font-sans text-xs md:text-sm font-medium tracking-wide transition-all duration-300 backdrop-blur-[12px] border";
 ```
+
+This reduces padding from `px-10 py-3.5` to `px-6 py-2.5` on mobile, and text from `text-sm` to `text-xs` on mobile.
 
 ---
 
-## Fix 7: Brand statement - two separate lines
+### Fix 4: Mesh pendant showing shade swatches when it has none
 
-**File:** `src/app/page.tsx`
-**In Section 2 (Brand Statement), find:**
+**File:** `src/components/ShadeSwatches.tsx`
+**What:** The component falls back to 4 hardcoded DEFAULT_SHADES when no shade data is provided. This is wrong for products like the Mesh pendant that have no shade options. Fix: return nothing when no shades are passed.
+
+**Replace the entire file with:**
+
 ```tsx
-              Objects deserve the same intellectual rigour as buildings.
-              Light is not decoration&thinsp;&mdash;&thinsp;it is atmosphere.
+interface Shade {
+  name: string;
+  color: string;
+}
+
+interface ShadeSwatchesProps {
+  className?: string;
+  shades?: Shade[];
+}
+
+export default function ShadeSwatches({ className = "", shades }: ShadeSwatchesProps) {
+  // Only render swatches if the product actually has shade data
+  if (!shades || shades.length === 0) return null;
+
+  return (
+    <div className={`flex gap-2 ${className}`}>
+      {shades.map((shade) => (
+        <div
+          key={shade.name}
+          title={shade.name}
+          className="h-3.5 w-3.5 rounded-full border border-white/30 transition-all duration-200 hover:scale-125 hover:shadow-[0_0_8px_var(--sw-color)]"
+          style={{ backgroundColor: shade.color, "--sw-color": shade.color } as React.CSSProperties}
+        />
+      ))}
+    </div>
+  );
+}
 ```
 
-**Replace with:**
-```tsx
-              Objects deserve the same intellectual rigour as buildings.
-              <br />
-              Light is not decoration&thinsp;&mdash;&thinsp;it is atmosphere.
-```
-
----
-
-## Fix 8: Remove ALL SketchMotif and tilde decorations from other pages
-
-**File: `src/app/process/page.tsx`**
-- Remove: `import SketchMotif from "@/components/SketchMotif";`
-- Remove the two SketchMotif JSX lines (ripple-outline and pendant-outline)
-
-**File: `src/app/about/page.tsx`**
-- Remove: `import SketchMotif from "@/components/SketchMotif";`
-- Remove the SketchMotif JSX line (tilde)
-
-**File: `src/app/legal/refund-policy/page.tsx`**
-- Remove: `import SketchMotif from "@/components/SketchMotif";`
-- Remove the SketchMotif JSX line
-
-**File: `src/app/legal/shipping-policy/page.tsx`**
-- Same as above
-
-**File: `src/app/legal/privacy-policy/page.tsx`**
-- Same as above
-
-**File: `src/app/legal/terms-of-service/page.tsx`**
-- Same as above
-
-**File: `src/components/Footer.tsx`**
-Remove the tilde frieze SVG block at the top of the footer:
-```tsx
-      <div className="flex justify-center py-4 opacity-[0.06]" aria-hidden="true">
-        <svg viewBox="0 0 400 20" fill="none" className="h-2 w-64">
-          <path d="M10 12 Q50 2, 100 12 Q150 22, 200 12 Q250 2, 300 12 Q350 22, 390 8" stroke="var(--color-surface)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-        </svg>
-      </div>
-```
-
-**Do NOT delete the SketchMotif.tsx component file** - keep it for future use.
-
----
-
-## Fix 9: Blue gradient at bottom of product collection section
-
-**File:** `src/components/ProductShowcase.tsx`
-**What:** Add a subtle blue gradient at the bottom of the collection section. This does two things: gives the glass product cards contrast against the cream bg, and creates a smooth visual bridge into the blue "How it's made" process strip below.
-
-**Find the opening section tag (around line 33):**
-```tsx
-    <section className="relative overflow-hidden bg-surface px-6 py-section lg:py-section-lg">
-```
-
-**Add this immediately inside the section, as the first child before the heading div:**
-```tsx
-      {/* Gradient bridge to next blue section */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%]"
-        style={{
-          background: "linear-gradient(to bottom, transparent 0%, rgba(19, 70, 134, 0.04) 50%, rgba(19, 70, 134, 0.10) 100%)"
-        }}
-        aria-hidden="true"
-      />
-```
+**Key change:** Removed `DEFAULT_SHADES` entirely. If `shades` is undefined or empty, the component returns `null` - no dots shown. Products with Shopify shade data (Ripple, Hourglass) will still show their swatches. Products without shade options (Mesh pendant) will show nothing.
 
 ---
 
 ## Verification Checklist
 
 1. `npm run build` - zero errors
-2. Hero: no tilde sketch
-3. Hero: sketches snap to straight on hover (fast, not sluggish)
-4. Hero: no sketch overlaps the nav pill
-5. Hero: "View Our Work" has visible blue outline
-6. Homepage: brand statement on two lines
-7. Homepage: no "Have a project in mind" section
-8. Homepage: collection section has subtle blue gradient at bottom
-9. Footer: all links turn coral on hover
-10. Footer: no tilde frieze SVG
-11. Process/About/Legal pages: no SketchMotif decorations
-12. CursorGlow still working (the subtle lighter area - that's intentional)
+2. Hero: hover over Hourglass sketch - tooltip appears, sketch scales and straightens
+3. Hero: hover over Ripple sketch - same behaviour (regression check)
+4. Hero (mobile ~375px): Ripple and Hourglass don't collide with the headline text
+5. Hero (mobile): headline "Light, algorithmically crafted." is readable, not oversized
+6. Hero (mobile): CTA buttons fit within viewport, not oversized
+7. Product cards: Ripple and Hourglass show shade swatches (from Shopify data)
+8. Product cards: Mesh pendant does NOT show shade swatches

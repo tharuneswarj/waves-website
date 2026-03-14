@@ -70,7 +70,7 @@ export const heroSketches: SketchItem[] = [
     label: "The Ripple",
     src: "/sketches/lamp-ripple.png",
     href: "/shop/the-ripple-lamp", // Exact Shopify handle
-    position: { top: "35%", right: "15%" },
+    position: { top: "40%", right: "5%" },
     width: "130px",
     rotate: -4,
     delay: 0.7,
@@ -81,7 +81,7 @@ export const heroSketches: SketchItem[] = [
     label: "The Hourglass",
     src: "/sketches/lamp-hourglass.png",
     href: "/shop/the-hour-glass-lamp", // Exact Shopify handle
-    position: { top: "30%", right: "32%" },
+    position: { top: "36%", right: "18%" },
     width: "120px",
     rotate: 5,
     delay: 0.85,
