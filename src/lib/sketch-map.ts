@@ -46,8 +46,8 @@ export const heroSketches: SketchItem[] = [
     label: "Chennai Pendant",
     src: "/sketches/pendant-chennai.png",
     href: "/studio/chennai-residence",
-    position: { top: "10%", left: "32%" },
-    width: "100px",
+    position: { top: "8%", left: "34%" },
+    width: "140px",
     rotate: -2,
     delay: 0.4,
     type: "project",
@@ -56,22 +56,22 @@ export const heroSketches: SketchItem[] = [
     id: "linear-pendant",
     label: "Linear Pendant",
     src: "/sketches/pendant-linear.png",
-    href: null, // Not yet a live product or project
-    position: { top: "8%", right: "18%" },
-    width: "180px",
+    href: null,
+    position: { top: "5%", right: "10%" },
+    width: "360px",
     rotate: 1,
     delay: 0.55,
     type: "project",
   },
 
-  // ── Table lamps (mid-right area) ──
+  // ── Table lamps (center-right area, prominent) ──
   {
     id: "ripple-sketch",
     label: "The Ripple",
     src: "/sketches/lamp-ripple.png",
-    href: "/shop/the-ripple-lamp", // Exact Shopify handle
-    position: { top: "40%", right: "5%" },
-    width: "130px",
+    href: "/shop/the-ripple-lamp",
+    position: { top: "32%", right: "12%" },
+    width: "180px",
     rotate: -4,
     delay: 0.7,
     type: "product",
@@ -80,9 +80,9 @@ export const heroSketches: SketchItem[] = [
     id: "hourglass-sketch",
     label: "The Hourglass",
     src: "/sketches/lamp-hourglass.png",
-    href: "/shop/the-hour-glass-lamp", // Exact Shopify handle
-    position: { top: "36%", right: "18%" },
-    width: "120px",
+    href: "/shop/the-hour-glass-lamp",
+    position: { top: "30%", right: "30%" },
+    width: "160px",
     rotate: 5,
     delay: 0.85,
     type: "product",
@@ -94,13 +94,12 @@ export const heroSketches: SketchItem[] = [
     label: "Floor Lamp",
     src: "/sketches/lamp-floor.png",
     href: null,
-    position: { bottom: "8%", right: "8%" },
-    width: "80px",
+    position: { bottom: "4%", right: "3%" },
+    width: "120px",
     rotate: 2,
     delay: 1.0,
     type: "project",
   },
-
 ];
 
 /**

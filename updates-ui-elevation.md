@@ -1,36 +1,152 @@
 # Waves Website - Updates
 
-*Generated: 14 March 2026 from Claude.ai conversation*
+*Generated: 15 March 2026 from Claude.ai conversation*
 *Status: COMPLETE*
 *Branch: `ui-elevation`*
 
 ---
 
-> Execute all fixes in order. Run `npm run build` after completion.
+> Two focused fixes. Execute in order. Run `npm run build` after completion.
 
 ---
 
-## P0 — Do Now
+## Fix 1: Sketch sizing and placement - desktop and mobile
 
-### Fix 1: Hourglass sketch hover not activating
+The real sketch PNGs are now in `/public/sketches/`. The current sizes are too small on both desktop and mobile, leaving too much empty space in the hero. The sketches should fill the space between the caption ("Lighting objects designed through code...") at the top and the headline ("Light, algorithmically crafted.") at the bottom.
+
+### 1a. Update sketch sizes and positions
+
+**File:** `src/lib/sketch-map.ts`
+
+**Replace the entire `heroSketches` array (from the opening `export const heroSketches` through the closing `];` before the `sketchPlaceholders` block) with:**
+
+```typescript
+export const heroSketches: SketchItem[] = [
+  // ── Pendants (hanging from top) ──
+  {
+    id: "chennai-pendant",
+    label: "Chennai Pendant",
+    src: "/sketches/pendant-chennai.png",
+    href: "/studio/chennai-residence",
+    position: { top: "4%", left: "34%" },
+    width: "160px",
+    rotate: -2,
+    delay: 0.4,
+    type: "project",
+  },
+  {
+    id: "linear-pendant",
+    label: "Linear Pendant",
+    src: "/sketches/pendant-linear.png",
+    href: null,
+    position: { top: "2%", right: "10%" },
+    width: "260px",
+    rotate: 1,
+    delay: 0.55,
+    type: "project",
+  },
+
+  // ── Table lamps (center-right area, prominent) ──
+  {
+    id: "ripple-sketch",
+    label: "The Ripple",
+    src: "/sketches/lamp-ripple.png",
+    href: "/shop/the-ripple-lamp",
+    position: { top: "28%", right: "6%" },
+    width: "200px",
+    rotate: -4,
+    delay: 0.7,
+    type: "product",
+  },
+  {
+    id: "hourglass-sketch",
+    label: "The Hourglass",
+    src: "/sketches/lamp-hourglass.png",
+    href: "/shop/the-hour-glass-lamp",
+    position: { top: "22%", right: "26%" },
+    width: "180px",
+    rotate: 5,
+    delay: 0.85,
+    type: "product",
+  },
+
+  // ── Floor lamp (tall, bottom-right) ──
+  {
+    id: "floor-lamp",
+    label: "Floor Lamp",
+    src: "/sketches/lamp-floor.png",
+    href: null,
+    position: { bottom: "4%", right: "3%" },
+    width: "120px",
+    rotate: 2,
+    delay: 1.0,
+    type: "project",
+  },
+];
+```
+
+**Size changes:**
+- Chennai pendant: 100px → 160px
+- Linear pendant: 180px → 260px
+- Ripple: 130px → 200px
+- Hourglass: 120px → 180px
+- Floor lamp: 80px → 120px
+
+**Position changes:**
+- All sketches repositioned to spread across the right side of the hero more prominently
+- Pendants pushed closer to the top edge
+- Table lamps (Ripple + Hourglass) centered in the mid-right zone
+- Floor lamp tucked into the bottom-right corner
+
+Do NOT touch the `sketchPlaceholders` object - keep it as-is.
+
+---
+
+### 1b + Fix 2: Update HeroSketches component (mobile sizing + hover exit lag)
 
 **File:** `src/components/HeroSketches.tsx`
-**What:** The Hourglass sketch does not respond to hover (no scale, no rotation, no tooltip). Root cause: wrapping the entire `motion.div` inside `<Link className="contents">` breaks Framer Motion's `whileHover` detection in some browsers. Fix by moving the Link inside the motion.div so the motion element is always the outermost positioned element.
 
-**Replace the entire `SketchElement` function (lines 19-86) with:**
+**Replace the entire file contents with:**
 
 ```tsx
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { heroSketches, sketchPlaceholders } from "@/lib/sketch-map";
+
+export default function HeroSketches() {
+  return (
+    <>
+      {heroSketches.map((sketch) => (
+        <SketchElement key={sketch.id} sketch={sketch} />
+      ))}
+    </>
+  );
+}
+
 function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
   const [imgFailed, setImgFailed] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [hasEntered, setHasEntered] = useState(false);
 
   useEffect(() => {
     setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
 
-  // Extract the placeholder key from the src path (e.g., "/sketches/lamp-ripple.png" -> "lamp-ripple")
   const placeholderKey = sketch.src.replace("/sketches/", "").replace(".png", "");
   const placeholderSvg = sketchPlaceholders[placeholderKey];
+
+  // After entrance animation completes, switch to fast spring for hover interactions.
+  // This fixes the hover-exit lag: without this, the slow entrance transition (0.6s + delay)
+  // is reused when the cursor leaves, making the rotation back feel sluggish.
+  const baseTransition = reducedMotion
+    ? { duration: 0 }
+    : hasEntered
+      ? { type: "spring" as const, stiffness: 400, damping: 20 }
+      : { duration: 0.6, ease: "easeOut" as const, delay: sketch.delay };
 
   const imageContent = (
     <>
@@ -55,7 +171,7 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
 
   return (
     <motion.div
-      className={`group absolute ${sketch.type === "product" ? "block max-md:!w-[70px] max-md:opacity-50" : "hidden md:block"}`}
+      className={`group absolute ${sketch.type === "product" ? "block max-md:!w-[130px]" : "hidden md:block"}`}
       style={{
         ...sketch.position,
         width: sketch.width,
@@ -63,15 +179,17 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
       }}
       initial={reducedMotion ? false : { opacity: 0, scale: 0.85, rotate: sketch.rotate - 3 }}
       animate={{ opacity: 1, scale: 1, rotate: sketch.rotate }}
-      transition={reducedMotion ? { duration: 0 } : { duration: 0.6, ease: "easeOut", delay: sketch.delay }}
+      transition={baseTransition}
+      onAnimationComplete={() => {
+        if (!hasEntered) setHasEntered(true);
+      }}
       whileHover={{
         scale: 1.1,
         rotate: 0,
         zIndex: 10,
-        transition: { type: "spring", stiffness: 400, damping: 15, duration: 0.2 }
+        transition: { type: "spring", stiffness: 400, damping: 15 }
       }}
     >
-      {/* Image or SVG fallback - wrapped in Link if clickable */}
       {sketch.href ? (
         <Link href={sketch.href} className="block">
           {imageContent}
@@ -80,7 +198,6 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
         imageContent
       )}
 
-      {/* Hover tooltip */}
       {sketch.type !== "decorative" && (
         <span className="pointer-events-none absolute -top-6 left-1/2 -translate-x-1/2 rounded bg-[var(--glass-bg)] px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-primary opacity-0 backdrop-blur-[8px] border border-[var(--glass-border)] transition-all duration-200 group-hover:opacity-100 group-hover:-translate-y-1 whitespace-nowrap">
           {sketch.label}
@@ -91,119 +208,28 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
 }
 ```
 
-**Key change:** The `motion.div` is now always the outermost element (never wrapped in a Link). The Link sits inside, wrapping only the image content. This ensures `whileHover` fires correctly on every sketch.
+**Three things changed in this file:**
 
----
+1. **Mobile sizing** - `max-md:!w-[70px] max-md:opacity-50` changed to `max-md:!w-[130px]`
+   - Width: 70px → 130px (nearly double, fills the empty space between caption and headline)
+   - Removed opacity-50: sketches are now fully visible on mobile
 
-### Fix 2: Move Ripple + Hourglass sketches for mobile fit
+2. **Hover exit lag fixed** - Added `hasEntered` state + `onAnimationComplete` callback
+   - On page load: entrance animation plays with the slow 0.6s stagger (unchanged, still smooth)
+   - After entrance completes: `hasEntered` flips to true, switching `baseTransition` to a fast spring
+   - Hover IN: fast spring (stiffness 400, damping 15) - unchanged, already snappy
+   - Hover OUT: now uses the same fast spring instead of the slow 0.6s entrance transition
+   - Result: both hover in and out feel equally responsive
 
-**File:** `src/lib/sketch-map.ts`
-**What:** On mobile, the Ripple and Hourglass sketches collide with the "Light, algorithmically crafted." headline. Move both further right and lower.
-
-**Ripple sketch - find:**
-```typescript
-    position: { top: "35%", right: "15%" },
-```
-**Replace with:**
-```typescript
-    position: { top: "40%", right: "5%" },
-```
-
-**Hourglass sketch - find:**
-```typescript
-    position: { top: "30%", right: "32%" },
-```
-**Replace with:**
-```typescript
-    position: { top: "36%", right: "18%" },
-```
-
----
-
-### Fix 3: Hero headline and CTA buttons too large on mobile
-
-**File:** `src/components/HeroAnimated.tsx`
-
-**3a. Headline - reduce mobile size**
-
-**Find:**
-```tsx
-        className="relative z-10 max-w-[75%] text-5xl leading-[0.95] text-primary sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
-```
-
-**Replace with:**
-```tsx
-        className="relative z-10 max-w-[85%] md:max-w-[75%] text-3xl leading-[0.95] text-primary sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl"
-```
-
-This drops the mobile headline from `text-5xl` (48px) to `text-3xl` (30px), which keeps "algorithmically" from overwhelming the screen. Also widens `max-w` on mobile so the word doesn't wrap awkwardly.
-
-**3b. CTA buttons - reduce mobile padding**
-
-**File:** `src/components/GlassButton.tsx`
-
-**Find:**
-```tsx
-    "inline-flex items-center justify-center px-10 py-3.5 rounded-full font-sans text-sm font-medium tracking-wide transition-all duration-300 backdrop-blur-[12px] border";
-```
-
-**Replace with:**
-```tsx
-    "inline-flex items-center justify-center px-6 py-2.5 md:px-10 md:py-3.5 rounded-full font-sans text-xs md:text-sm font-medium tracking-wide transition-all duration-300 backdrop-blur-[12px] border";
-```
-
-This reduces padding from `px-10 py-3.5` to `px-6 py-2.5` on mobile, and text from `text-sm` to `text-xs` on mobile.
-
----
-
-### Fix 4: Mesh pendant showing shade swatches when it has none
-
-**File:** `src/components/ShadeSwatches.tsx`
-**What:** The component falls back to 4 hardcoded DEFAULT_SHADES when no shade data is provided. This is wrong for products like the Mesh pendant that have no shade options. Fix: return nothing when no shades are passed.
-
-**Replace the entire file with:**
-
-```tsx
-interface Shade {
-  name: string;
-  color: string;
-}
-
-interface ShadeSwatchesProps {
-  className?: string;
-  shades?: Shade[];
-}
-
-export default function ShadeSwatches({ className = "", shades }: ShadeSwatchesProps) {
-  // Only render swatches if the product actually has shade data
-  if (!shades || shades.length === 0) return null;
-
-  return (
-    <div className={`flex gap-2 ${className}`}>
-      {shades.map((shade) => (
-        <div
-          key={shade.name}
-          title={shade.name}
-          className="h-3.5 w-3.5 rounded-full border border-white/30 transition-all duration-200 hover:scale-125 hover:shadow-[0_0_8px_var(--sw-color)]"
-          style={{ backgroundColor: shade.color, "--sw-color": shade.color } as React.CSSProperties}
-        />
-      ))}
-    </div>
-  );
-}
-```
-
-**Key change:** Removed `DEFAULT_SHADES` entirely. If `shades` is undefined or empty, the component returns `null` - no dots shown. Products with Shopify shade data (Ripple, Hourglass) will still show their swatches. Products without shade options (Mesh pendant) will show nothing.
+3. **Link moved inside motion.div** - Fixes potential hover detection issues where the Link wrapper could interfere with Framer Motion's whileHover
 
 ---
 
 ## Verification Checklist
 
 1. `npm run build` - zero errors
-2. Hero: hover over Hourglass sketch - tooltip appears, sketch scales and straightens
-3. Hero: hover over Ripple sketch - same behaviour (regression check)
-4. Hero (mobile ~375px): Ripple and Hourglass don't collide with the headline text
-5. Hero (mobile): headline "Light, algorithmically crafted." is readable, not oversized
-6. Hero (mobile): CTA buttons fit within viewport, not oversized
-7. Product cards: Ripple and Hourglass show shade swatches (from Shopify data)
-8. Product cards: Mesh pendant does NOT show shade swatches
+2. Desktop hero: all 5 sketches visibly larger, filling the right side between caption and headline
+3. Mobile hero (~375px): Ripple and Hourglass are ~130px wide, fully opaque, clearly visible in the space between caption and headline
+4. Page load: sketches still stagger in smoothly with the gentle entrance animation
+5. Hover IN on any sketch: snaps to straight + scales up instantly
+6. Hover OUT on any sketch: snaps back to tilted position instantly (no lag, matches hover-in speed)

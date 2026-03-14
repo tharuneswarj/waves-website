@@ -19,14 +19,23 @@ export default function HeroSketches() {
 function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
   const [imgFailed, setImgFailed] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [hasEntered, setHasEntered] = useState(false);
 
   useEffect(() => {
     setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
 
-  // Extract the placeholder key from the src path (e.g., "/sketches/lamp-ripple.png" -> "lamp-ripple")
   const placeholderKey = sketch.src.replace("/sketches/", "").replace(".png", "");
   const placeholderSvg = sketchPlaceholders[placeholderKey];
+
+  // After entrance animation completes, switch to fast spring for hover interactions.
+  // This fixes the hover-exit lag: without this, the slow entrance transition (0.6s + delay)
+  // is reused when the cursor leaves, making the rotation back feel sluggish.
+  const baseTransition = reducedMotion
+    ? { duration: 0 }
+    : hasEntered
+      ? { type: "spring" as const, stiffness: 400, damping: 20 }
+      : { duration: 0.6, ease: "easeOut" as const, delay: sketch.delay };
 
   const imageContent = (
     <>
@@ -51,7 +60,7 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
 
   return (
     <motion.div
-      className={`group absolute ${sketch.type === "product" ? "block max-md:!w-[70px] max-md:opacity-50" : "hidden md:block"}`}
+      className={`group absolute ${sketch.type === "product" ? "block max-md:!w-[130px]" : "hidden md:block"}`}
       style={{
         ...sketch.position,
         width: sketch.width,
@@ -59,15 +68,17 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
       }}
       initial={reducedMotion ? false : { opacity: 0, scale: 0.85, rotate: sketch.rotate - 3 }}
       animate={{ opacity: 1, scale: 1, rotate: sketch.rotate }}
-      transition={reducedMotion ? { duration: 0 } : { duration: 0.6, ease: "easeOut", delay: sketch.delay }}
+      transition={baseTransition}
+      onAnimationComplete={() => {
+        if (!hasEntered) setHasEntered(true);
+      }}
       whileHover={{
         scale: 1.1,
         rotate: 0,
         zIndex: 10,
-        transition: { type: "spring", stiffness: 400, damping: 15, duration: 0.2 }
+        transition: { type: "spring", stiffness: 400, damping: 15 }
       }}
     >
-      {/* Image or SVG fallback - wrapped in Link if clickable */}
       {sketch.href ? (
         <Link href={sketch.href} className="block">
           {imageContent}
@@ -76,7 +87,6 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
         imageContent
       )}
 
-      {/* Hover tooltip */}
       {sketch.type !== "decorative" && (
         <span className="pointer-events-none absolute -top-6 left-1/2 -translate-x-1/2 rounded bg-[var(--glass-bg)] px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-primary opacity-0 backdrop-blur-[8px] border border-[var(--glass-border)] transition-all duration-200 group-hover:opacity-100 group-hover:-translate-y-1 whitespace-nowrap">
           {sketch.label}
