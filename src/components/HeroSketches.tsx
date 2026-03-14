@@ -39,7 +39,12 @@ function SketchElement({ sketch }: { sketch: (typeof heroSketches)[number] }) {
       initial={reducedMotion ? false : { opacity: 0, scale: 0.85, rotate: sketch.rotate - 3 }}
       animate={{ opacity: 1, scale: 1, rotate: sketch.rotate }}
       transition={reducedMotion ? { duration: 0 } : { duration: 0.6, ease: "easeOut", delay: sketch.delay }}
-      whileHover={{ scale: 1.1, rotate: 0, zIndex: 10 }}
+      whileHover={{
+        scale: 1.1,
+        rotate: 0,
+        zIndex: 10,
+        transition: { type: "spring", stiffness: 400, damping: 15, duration: 0.2 }
+      }}
     >
       {/* The sketch image or SVG fallback */}
       {!imgFailed ? (

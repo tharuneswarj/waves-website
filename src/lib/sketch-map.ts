@@ -46,7 +46,7 @@ export const heroSketches: SketchItem[] = [
     label: "Chennai Pendant",
     src: "/sketches/pendant-chennai.png",
     href: "/studio/chennai-residence",
-    position: { top: "3%", left: "32%" },
+    position: { top: "10%", left: "32%" },
     width: "100px",
     rotate: -2,
     delay: 0.4,
@@ -57,7 +57,7 @@ export const heroSketches: SketchItem[] = [
     label: "Linear Pendant",
     src: "/sketches/pendant-linear.png",
     href: null, // Not yet a live product or project
-    position: { top: "2%", right: "18%" },
+    position: { top: "8%", right: "18%" },
     width: "180px",
     rotate: 1,
     delay: 0.55,
@@ -101,18 +101,6 @@ export const heroSketches: SketchItem[] = [
     type: "project",
   },
 
-  // ── Decorative tilde (top-left accent) ──
-  {
-    id: "tilde-motif",
-    label: "~",
-    src: "/sketches/tilde-motif.png",
-    href: null,
-    position: { top: "18%", left: "10%" },
-    width: "70px",
-    rotate: -3,
-    delay: 1.2,
-    type: "decorative",
-  },
 ];
 
 /**
@@ -126,5 +114,4 @@ export const sketchPlaceholders: Record<string, string> = {
   "lamp-ripple": `<svg viewBox="0 0 100 130" fill="none" stroke="#ED3F27" stroke-width="1.5" stroke-linecap="round"><ellipse cx="50" cy="18" rx="28" ry="8"/><path d="M22 18 C22 18, 18 85, 26 95 Q50 115, 74 95 C82 85, 78 18, 78 18"/><ellipse cx="50" cy="108" rx="28" ry="6"/><path d="M28 40 Q50 32, 72 40" opacity="0.4"/><path d="M26 55 Q50 47, 74 55" opacity="0.3"/><path d="M25 70 Q50 62, 75 70" opacity="0.2"/></svg>`,
   "lamp-hourglass": `<svg viewBox="0 0 80 120" fill="none" stroke="#ED3F27" stroke-width="1.5" stroke-linecap="round"><ellipse cx="40" cy="12" rx="25" ry="7"/><path d="M15 12 C15 12, 30 50, 30 58 C30 66, 15 100, 15 100"/><path d="M65 12 C65 12, 50 50, 50 58 C50 66, 65 100, 65 100"/><ellipse cx="40" cy="103" rx="28" ry="6"/><path d="M32 56 Q40 52, 48 56" opacity="0.5"/></svg>`,
   "lamp-floor": `<svg viewBox="0 0 50 140" fill="none" stroke="#ED3F27" stroke-width="1.5" stroke-linecap="round"><line x1="25" y1="35" x2="25" y2="120"/><ellipse cx="25" cy="125" rx="18" ry="5"/><ellipse cx="25" cy="15" rx="18" ry="6"/><path d="M7 15 C7 15, 10 35, 25 38 C40 35, 43 15, 43 15"/></svg>`,
-  "tilde-motif": `<svg viewBox="0 0 70 35" fill="none" stroke="#ED3F27" stroke-width="2" stroke-linecap="round"><path d="M5 20 Q18 5, 35 18 Q52 31, 65 15"/></svg>`,
 };

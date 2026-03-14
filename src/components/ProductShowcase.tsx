@@ -31,6 +31,15 @@ export default function ProductShowcase({ products }: { products: Product[] }) {
 
   return (
     <section className="relative overflow-hidden bg-surface px-6 py-section lg:py-section-lg">
+      {/* Gradient bridge to next blue section */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%]"
+        style={{
+          background: "linear-gradient(to bottom, transparent 0%, rgba(19, 70, 134, 0.04) 50%, rgba(19, 70, 134, 0.10) 100%)"
+        }}
+        aria-hidden="true"
+      />
+
       {/* Section heading - editorial, oversized */}
       <div className="mx-auto max-w-7xl mb-16 md:mb-24">
         <motion.h2

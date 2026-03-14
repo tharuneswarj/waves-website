@@ -19,11 +19,6 @@ const legalLinks = [
 export default function Footer() {
   return (
     <footer className="bg-primary text-surface">
-      <div className="flex justify-center py-4 opacity-[0.06]" aria-hidden="true">
-        <svg viewBox="0 0 400 20" fill="none" className="h-2 w-64">
-          <path d="M10 12 Q50 2, 100 12 Q150 22, 200 12 Q250 2, 300 12 Q350 22, 390 8" stroke="var(--color-surface)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-        </svg>
-      </div>
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10 lg:py-20">
         <div className="flex flex-col gap-12 md:flex-row md:items-start md:justify-between">
           <div className="flex flex-col gap-6">
@@ -37,17 +32,17 @@ export default function Footer() {
 
           <nav className="flex flex-col gap-3" aria-label="Footer navigation">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="text-sm font-medium text-surface/80 transition-colors hover:text-surface">
+              <Link key={link.href} href={link.href} className="text-sm font-medium text-surface/80 transition-colors hover:text-accent">
                 {link.label}
               </Link>
             ))}
           </nav>
 
           <div className="flex flex-col gap-3">
-            <a href="mailto:hello@waves.company" className="text-sm font-light text-surface/80 transition-colors hover:text-surface">
+            <a href="mailto:hello@waves.company" className="text-sm font-light text-surface/80 transition-colors hover:text-accent">
               hello@waves.company
             </a>
-            <a href="https://instagram.com/waves_company_" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-light text-surface/80 transition-colors hover:text-surface">
+            <a href="https://instagram.com/waves_company_" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm font-light text-surface/80 transition-colors hover:text-accent">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
@@ -66,7 +61,7 @@ export default function Footer() {
             <nav className="flex flex-wrap items-center gap-x-4 gap-y-1" aria-label="Legal">
               {legalLinks.map((link, i) => (
                 <span key={link.href} className="flex items-center gap-4">
-                  <Link href={link.href} className="font-mono text-[10px] tracking-wide text-surface/35 transition-colors hover:text-surface/60">
+                  <Link href={link.href} className="font-mono text-[10px] tracking-wide text-surface/35 transition-colors hover:text-accent/80">
                     {link.label}
                   </Link>
                   {i < legalLinks.length - 1 && (

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import SketchMotif from "@/components/SketchMotif";
+
 
 export const metadata: Metadata = {
   title: "Shipping Policy — Waves Company",
@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 export default function ShippingPolicyPage() {
   return (
     <main className="relative min-h-screen bg-surface">
-      <SketchMotif variant="tilde" className="absolute top-12 right-12 w-20 h-10" opacity={0.08} />
       <section className="border-b border-primary/10 px-6 py-16 lg:px-10 lg:py-20">
         <div className="mx-auto max-w-3xl">
           <p className="mb-4 font-mono text-[11px] tracking-widest text-primary/30 uppercase">Legal</p>
